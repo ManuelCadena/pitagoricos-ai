@@ -262,3 +262,32 @@ curl -H "Cookie: [session-cookie]" https://pitagoricos.ai/api/signed-url
 - [ElevenLabs Agent Configuration](https://elevenlabs.io/docs/eleven-agents/build/overview)
 - [ElevenLabs JavaScript SDK](https://elevenlabs.io/docs/eleven-agents/libraries/java-script)
 - [RAG Configuration](https://elevenlabs.io/docs/eleven-agents/customization/knowledge-base/rag)
+
+---
+
+## Knowledge Base — Platonic Space Symposium (2026-08-24)
+
+**Análisis PhD**: el prompt de Teano la define como "testigo-oyente del Symposium" con
+"DOMINIO PLENO DEL CORPUS" y sus guardrails exigen citar solo lo que está en el material.
+Sin el corpus en el KB, esa identidad era una promesa sin sustento (riesgo de alucinación).
+**Conclusión: integración necesaria, no opcional.**
+
+### Corpus integrado
+- Fuente: 36 transcripciones de la playlist "The Platonic Space" (2.15M chars)
+- Consolidado en 6 documentos (markdown) para RAG óptimo:
+
+| Documento | ID | Contenido |
+|---|---|---|
+| PS-Symposium-Keynotes-1 | LLwwVUap96xhlmvjbsML | Keynotes 1-9 (Levin, Dietz, Tolchinsky, Lyons, Witkowski...) |
+| PS-Symposium-Keynotes-2 | TDqFVy6o4mmImk6k6cE9 | Keynotes 10-18 (Fields, Aguilera, Agüera y Arcas, Segall, Friston, Froese, Noble, Jackson) |
+| PS-Symposium-Keynotes-3 | y6HIT8Vi5NHVKwn8O1Nd | Keynotes 19-27 (Ruffini, Murphy, Chvykov, Foster...) |
+| PS-Symposium-Conversations | 2EJujKmqMutUVWpxApRT | Belrose, Iammarino |
+| PS-Symposium-Panel-Discussions | 5z725zMJ8Dh6D1QOplTg | Discusiones 1-5 |
+| PS-Symposium-Opening-Closing | Bbg9yf65OhS8qGIjw6oX | Apertura y cierre |
+
+### Estado
+- RAG: habilitado (e5_mistral_7b_instruct), 6/6 docs indexados
+- KB total del agente: 13 docs (7 corpus maestra Amelita + 6 Symposium)
+- usage_mode: auto en todos
+- Verificado con simulación: Teano respondió sobre el keynote de Levin
+  con contenido real del corpus (espacio estructurado de patrones)
