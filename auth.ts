@@ -20,19 +20,38 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       const email = user.email?.toLowerCase();
       if (!email) return false;
 
-      // Auto-approve users in ALLOWED_EMAILS
-      if (allowedEmails.includes(email)) {
-        await prisma.user.updateMany({
+      // Check if user is in allowlist
+      const isInAllowlist = allowedEmails.includes(email);
+
+      // Find or create user
+      let dbUser = await prisma.user.findUnique({ where: { email } });
+
+      if (!dbUser && isInAllowlist) {
+        // Create user if in allowlist and doesn't exist
+        dbUser = await prisma.user.create({
+          data: {
+            email,
+            name: user.name ?? email.split('@')[0],
+            image: user.image,
+            isAllowed: true,
+          },
+        });
+        return true;
+      }
+
+      if (dbUser && isInAllowlist && !dbUser.isAllowed) {
+        // Update existing user to allowed if in allowlist
+        await prisma.user.update({
           where: { email },
           data: { isAllowed: true },
         });
         return true;
       }
 
-      // Otherwise check if already allowed (e.g., manually approved)
-      const existing = await prisma.user.findUnique({ where: { email } });
-      if (existing?.isAllowed) return true;
+      // Allow if already approved
+      if (dbUser?.isAllowed) return true;
 
+      // Reject otherwise
       return false;
     },
     async jwt({ token, user, account }) {

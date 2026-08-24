@@ -28,8 +28,13 @@
 - **Servidor**: EC2 Chatita, `54.212.177.221`, `i-0994d0887cc3c3476`
 - **Puerto app**: `3200`
 - **Proceso**: `pitagoricos-ai` en PM2
-- **Reverse proxy**: nginx `/etc/nginx/conf.d/pitagoricos.ai.conf`
+- **Reverse proxy**: nginx `/etc/nginx/conf.d/pitagoricos.ai.conf` → `proxy_pass http://127.0.0.1:3200`
 - **SSL**: Let's Encrypt `/etc/letsencrypt/live/pitagoricos.ai/`
 
 ## Repositorio
 - GitHub: `https://github.com/ManuelCadena/pitagoricos-ai`
+
+## Notas de operación
+- El middleware protege todo el sitio y redirige a `/{locale}/login` si no hay sesión.
+- Si la sesión existe pero el email no está en `ALLOWED_EMAILS`, redirige a `/{locale}/no-autorizado`.
+- El deploy se hace con `bash scripts/deploy.sh` (build → S3 → SSM → PM2 reload).
