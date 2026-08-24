@@ -50,6 +50,7 @@ model User {
   accounts       Account[]
   sessions       Session[]
   conversations  Conversation[]
+  studentProfile StudentProfile?
 }
 
 model VerificationToken {
@@ -61,13 +62,25 @@ model VerificationToken {
 }
 
 model Conversation {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  agentId   String
-  type      String   // voice | text
-  messages  String   // JSON array of {role, content, timestamp}
-  summary   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  agentId          String
+  type             String   // voice | text
+  messages         String   // JSON array of {role, content, timestamp}
+  summary          String?
+  elConversationId String?  @unique // ElevenLabs conversation_id
+  status           String   @default("active") // active | synced | sync_failed
+  title            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model StudentProfile {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profileText  String   // Perfil acumulado del alumno (texto compacto)
+  sessionCount Int      @default(0)
+  updatedAt    DateTime @updatedAt
 }

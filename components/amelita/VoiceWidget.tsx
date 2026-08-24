@@ -4,19 +4,38 @@ import { useEffect, useRef, useState } from 'react';
 import { Mic, MicOff } from 'lucide-react';
 import { Conversation } from '@elevenlabs/client';
 
-export function VoiceWidget({ userEmail }: { userEmail: string }) {
+export function VoiceWidget({ userEmail, resumeId }: { userEmail: string; resumeId?: string }) {
   const [conversation, setConversation] = useState<Awaited<ReturnType<typeof Conversation.startSession>> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const conversationRef = useRef<typeof conversation>(null);
   conversationRef.current = conversation;
+  const elConversationIdRef = useRef<string | null>(null);
+
+  // Notifica el fin de sesión al backend para sincronizar transcript+resumen (memoria)
+  const notifySessionEnd = () => {
+    const elId = elConversationIdRef.current;
+    if (!elId) return;
+    elConversationIdRef.current = null;
+    const payload = JSON.stringify({ elConversationId: elId });
+    // sendBeacon sobrevive al unload; fallback a fetch
+    if (!navigator.sendBeacon?.('/api/sessions/end', new Blob([payload], { type: 'application/json' }))) {
+      fetch('/api/sessions/end', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        keepalive: true,
+      }).catch(() => {});
+    }
+  };
 
   // F4 (auditoría forense): cerrar la sesión de voz al desmontar el componente
   // (p.ej. al cambiar al tab Texto) para evitar sesiones cruzadas.
   useEffect(() => {
     return () => {
       conversationRef.current?.endSession().catch(() => {});
+      notifySessionEnd();
     };
   }, []);
 
@@ -43,15 +62,35 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
       const conv = await Conversation.startSession({
         conversationToken: data.token,
         connectionType: 'webrtc',
-        onConnect: () => {
-          console.log('[VoiceWidget] Connected to Ame (WebRTC)');
+        onConnect: ({ conversationId }) => {
+          console.log('[VoiceWidget] Connected to Ame (WebRTC):', conversationId);
           setIsActive(true);
           setLoading(false);
+          elConversationIdRef.current = conversationId;
+
+          // MEMORIA: registrar sesión + inyectar contexto de sesiones anteriores
+          fetch('/api/sessions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ elConversationId: conversationId, type: 'voice' }),
+          }).catch(() => {});
+
+          const memoryUrl = resumeId ? `/api/memory?resumeId=${encodeURIComponent(resumeId)}` : '/api/memory';
+          fetch(memoryUrl)
+            .then((r) => r.json())
+            .then(({ context }) => {
+              if (context && conversationRef.current) {
+                conversationRef.current.sendContextualUpdate(context);
+                console.log('[VoiceWidget] Memoria inyectada:', context.length, 'chars');
+              }
+            })
+            .catch(() => {});
         },
         onDisconnect: () => {
           console.log('[VoiceWidget] Disconnected from Ame');
           setIsActive(false);
           setConversation(null);
+          notifySessionEnd();
         },
         onError: (error) => {
           console.error('[VoiceWidget] Error:', error);
@@ -86,6 +125,7 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
       }
       setConversation(null);
       setIsActive(false);
+      notifySessionEnd();
     }
   };
 

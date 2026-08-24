@@ -13,7 +13,7 @@ interface Message {
 const MAX_RECONNECT_ATTEMPTS = 5;
 const BACKOFF_MS = [1000, 2000, 4000, 8000, 15000];
 
-export function TextChat({ userEmail }: { userEmail: string }) {
+export function TextChat({ userEmail, resumeId }: { userEmail: string; resumeId?: string }) {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'agent',
@@ -32,10 +32,29 @@ export function TextChat({ userEmail }: { userEmail: string }) {
   const attemptsRef = useRef(0);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const elConversationIdRef = useRef<string | null>(null);
+  const resumeIdRef = useRef(resumeId);
+  resumeIdRef.current = resumeId;
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Notifica el fin de sesión al backend para sincronizar transcript+resumen (memoria)
+  const notifySessionEnd = useCallback(() => {
+    const elId = elConversationIdRef.current;
+    if (!elId) return;
+    elConversationIdRef.current = null;
+    const payload = JSON.stringify({ elConversationId: elId });
+    if (!navigator.sendBeacon?.('/api/sessions/end', new Blob([payload], { type: 'application/json' }))) {
+      fetch('/api/sessions/end', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        keepalive: true,
+      }).catch(() => {});
+    }
+  }, []);
 
   const connect = useCallback(async () => {
     if (!mountedRef.current) return;
@@ -55,11 +74,34 @@ export function TextChat({ userEmail }: { userEmail: string }) {
           setConnected(true);
           setReconnecting(false);
           setError(null);
+          elConversationIdRef.current = conversationId;
+
+          // MEMORIA: registrar sesión + inyectar contexto de sesiones anteriores
+          fetch('/api/sessions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ elConversationId: conversationId, type: 'text' }),
+          }).catch(() => {});
+
+          const rid = resumeIdRef.current;
+          const memoryUrl = rid ? `/api/memory?resumeId=${encodeURIComponent(rid)}` : '/api/memory';
+          fetch(memoryUrl)
+            .then((r) => r.json())
+            .then(({ context }) => {
+              if (context && conversationRef.current) {
+                conversationRef.current.sendContextualUpdate(context);
+                console.log('[TextChat] Memoria inyectada:', context.length, 'chars');
+              }
+            })
+            .catch(() => {});
         },
         onDisconnect: (details) => {
           // Diagnóstico: reason = 'error' (red) | 'agent' (timeout/limite del agente) | 'user'
           console.warn('[TextChat] Disconnected:', JSON.stringify(details));
           setConnected(false);
+          // La conversación de EL terminó (una reconexión crea otra nueva):
+          // sincronizar transcript+resumen de la que acaba de cerrar.
+          notifySessionEnd();
           if (!mountedRef.current || details.reason === 'user') return;
 
           // Reconexión automática con backoff
@@ -114,7 +156,7 @@ export function TextChat({ userEmail }: { userEmail: string }) {
         setError(err.message || 'Error iniciando el chat');
       }
     }
-  }, []);
+  }, [notifySessionEnd]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -124,8 +166,9 @@ export function TextChat({ userEmail }: { userEmail: string }) {
       if (reconnectTimerRef.current) clearTimeout(reconnectTimerRef.current);
       conversationRef.current?.endSession().catch(() => {});
       conversationRef.current = null;
+      notifySessionEnd();
     };
-  }, [connect]);
+  }, [connect, notifySessionEnd]);
 
   const manualReconnect = () => {
     setError(null);

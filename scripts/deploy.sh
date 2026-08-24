@@ -6,6 +6,7 @@ BUCKET="chatita-deployments-temp"
 INSTANCE_ID="i-0994d0887cc3c3476"
 REGION="us-west-2"
 REMOTE_DIR="/opt/chatita-aion/apps/pitagoricos-ai"
+DATA_DIR="/opt/chatita-aion/data/pitagoricos-ai"
 PORT="3200"
 
 cd "$ROOT"
@@ -27,7 +28,7 @@ NODE_ENV=production
 PORT=${PORT}
 NEXTAUTH_URL=https://pitagoricos.ai
 AUTH_URL=https://pitagoricos.ai/api/auth
-DATABASE_URL=file:./prisma/pitagoricos.db
+DATABASE_URL=file:${DATA_DIR}/pitagoricos.db
 ENVEOF
 
 if [[ -f .env.local ]]; then
@@ -40,7 +41,10 @@ aws s3 cp "/tmp/${ENV_FILE}" "s3://${BUCKET}/pitagoricos-ai/${ENV_FILE}"
 CMDS=$(cat <<EOF
 set -e
 mkdir -p ${REMOTE_DIR}
+mkdir -p ${DATA_DIR}
 mkdir -p /var/log/pitagoricos-ai
+if [ ! -f ${DATA_DIR}/pitagoricos.db ] && [ -f ${REMOTE_DIR}/prisma/prisma/pitagoricos.db ]; then cp ${REMOTE_DIR}/prisma/prisma/pitagoricos.db ${DATA_DIR}/pitagoricos.db && echo DB_MIGRATED_FROM_NESTED; fi
+if [ ! -f ${DATA_DIR}/pitagoricos.db ] && [ -f ${REMOTE_DIR}/prisma/pitagoricos.db ]; then cp ${REMOTE_DIR}/prisma/pitagoricos.db ${DATA_DIR}/pitagoricos.db && echo DB_MIGRATED_TO_DATA_DIR; fi
 aws s3 cp s3://${BUCKET}/${S3_KEY} /tmp/${TARBALL}
 rm -rf ${REMOTE_DIR}/* ${REMOTE_DIR}/.next ${REMOTE_DIR}/node_modules
 mkdir -p ${REMOTE_DIR}
@@ -48,7 +52,7 @@ tar -xzf /tmp/${TARBALL} -C ${REMOTE_DIR}
 cd ${REMOTE_DIR} && npm ci --omit=dev
 aws s3 cp s3://${BUCKET}/pitagoricos-ai/${ENV_FILE} ${REMOTE_DIR}/.env.production
 cp ${REMOTE_DIR}/.env.production ${REMOTE_DIR}/.env
-cd ${REMOTE_DIR} && npx prisma migrate deploy
+cd ${REMOTE_DIR} && DATABASE_URL=file:${DATA_DIR}/pitagoricos.db npx prisma migrate deploy
 pm2 reload ecosystem.config.js --update-env || pm2 start ecosystem.config.js
 pm2 save
 EOF
