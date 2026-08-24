@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Mic, MicOff } from 'lucide-react';
 import { Conversation } from '@elevenlabs/client';
 
@@ -9,47 +9,32 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(false);
-  const [signedUrl, setSignedUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Get signed URL from API
-    async function fetchSignedUrl() {
-      try {
-        const res = await fetch('/api/signed-url');
-        const data = await res.json();
-        
-        if (!res.ok) {
-          throw new Error(data.error || 'Failed to get signed URL');
-        }
-        
-        setSignedUrl(data.signedUrl);
-      } catch (err: any) {
-        console.error('[VoiceWidget] Error loading signed URL:', err);
-        setError(err.message || 'Error cargando configuración');
-      }
-    }
-    
-    fetchSignedUrl();
-  }, []);
 
   const startConversation = async () => {
-    if (!signedUrl) {
-      setError('No hay URL de conversación disponible');
-      return;
-    }
-
     try {
       setLoading(true);
       setError(null);
 
-      // Request microphone permission
-      await navigator.mediaDevices.getUserMedia({ audio: true });
+      // 1. Pedir permiso de micrófono y LIBERARLO de inmediato.
+      //    En iOS Safari solo puede existir UNA captura activa:
+      //    si no liberamos este stream, el SDK recibe silencio.
+      const permissionStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      permissionStream.getTracks().forEach((track) => track.stop());
 
-      // Start conversation with ElevenLabs
+      // 2. Obtener conversation token (WebRTC es lo recomendado para voz,
+      //    especialmente en móviles iOS/Android)
+      const res = await fetch('/api/conversation-token');
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'No se pudo obtener el token de conversación');
+      }
+
+      // 3. Iniciar sesión por WebRTC
       const conv = await Conversation.startSession({
-        signedUrl,
+        conversationToken: data.token,
+        connectionType: 'webrtc',
         onConnect: () => {
-          console.log('[VoiceWidget] Connected to Ame');
+          console.log('[VoiceWidget] Connected to Ame (WebRTC)');
           setIsActive(true);
           setLoading(false);
         },
@@ -65,14 +50,18 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
           setLoading(false);
         },
         onModeChange: (mode) => {
-          console.log('[VoiceWidget] Mode changed:', mode);
+          console.log('[VoiceWidget] Mode:', mode);
         },
       });
 
       setConversation(conv);
     } catch (err: any) {
       console.error('[VoiceWidget] Failed to start conversation:', err);
-      setError(err.message || 'No se pudo iniciar la conversación');
+      if (err?.name === 'NotAllowedError') {
+        setError('Permiso de micrófono denegado. Habilitalo en la configuración del navegador.');
+      } else {
+        setError(err.message || 'No se pudo iniciar la conversación');
+      }
       setIsActive(false);
       setLoading(false);
     }
@@ -82,29 +71,21 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
     if (conversation) {
       try {
         await conversation.endSession();
-        setConversation(null);
-        setIsActive(false);
       } catch (err) {
         console.error('[VoiceWidget] Error ending conversation:', err);
       }
+      setConversation(null);
+      setIsActive(false);
     }
   };
 
-  if (!signedUrl && !error) {
-    return (
-      <div className="flex items-center justify-center h-64 text-gold animate-pulse">
-        Invocando a Ame...
-      </div>
-    );
-  }
-
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 text-red-400 border border-red-400/20 rounded-2xl p-6 gap-4">
-        <p>{error}</p>
+      <div className="flex flex-col items-center justify-center min-h-56 text-center text-red-500 border border-red-300/40 rounded-2xl p-6 gap-4">
+        <p className="text-sm">{error}</p>
         <button
-          onClick={() => window.location.reload()}
-          className="px-6 py-2 border border-red-400 rounded-full hover:bg-red-400/10 transition-colors"
+          onClick={() => setError(null)}
+          className="px-6 py-3 min-h-[44px] border border-red-400 rounded-full text-sm hover:bg-red-400/10 active:bg-red-400/20 transition-colors"
         >
           Reintentar
         </button>
@@ -115,16 +96,16 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
   return (
     <div className="flex flex-col items-center gap-6">
       <div className="text-center max-w-lg space-y-4">
-        <p className="text-muted">
+        <p className="text-sm sm:text-base text-[rgb(var(--color-slate))] font-light">
           Presioná el botón del micrófono para hablar con Ame. La conversación es privada y se guarda para tu seguimiento personal.
         </p>
         {isActive && (
-          <p className="text-gold text-sm animate-pulse">
+          <p className="text-[rgb(var(--color-depth))] text-sm animate-pulse">
             🎙️ Ame está escuchando...
           </p>
         )}
         {loading && (
-          <p className="text-gold text-sm">
+          <p className="text-[rgb(var(--color-depth))] text-sm">
             Conectando con Ame...
           </p>
         )}
@@ -132,31 +113,31 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
 
       <button
         onClick={isActive ? stopConversation : startConversation}
-        disabled={loading || !signedUrl}
+        disabled={loading}
         className={`
-          relative w-24 h-24 rounded-full flex items-center justify-center
+          relative w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center
           transition-all duration-300 shadow-2xl
-          ${isActive 
-            ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-            : 'bg-gold hover:bg-gold-light'
+          ${isActive
+            ? 'bg-red-500 hover:bg-red-600 active:bg-red-700 animate-pulse'
+            : 'bg-[rgb(var(--color-depth))] hover:bg-[rgb(var(--color-twilight))] active:bg-[rgb(var(--color-dusk))]'
           }
           disabled:opacity-50 disabled:cursor-not-allowed
         `}
       >
         {loading ? (
-          <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 border-4 border-white border-t-transparent rounded-full animate-spin" />
         ) : isActive ? (
-          <MicOff className="w-10 h-10 text-white" />
+          <MicOff className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
         ) : (
-          <Mic className="w-10 h-10 text-background" />
+          <Mic className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
         )}
       </button>
 
-      <p className="text-sm text-muted">
-        {loading 
-          ? 'Conectando...' 
-          : isActive 
-            ? 'Presioná para terminar la conversación' 
+      <p className="text-xs sm:text-sm text-[rgb(var(--color-stone))] font-light">
+        {loading
+          ? 'Conectando...'
+          : isActive
+            ? 'Presioná para terminar la conversación'
             : 'Presioná para hablar con Ame'}
       </p>
     </div>

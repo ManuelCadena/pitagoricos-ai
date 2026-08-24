@@ -24,3 +24,27 @@ export async function getSignedUrl(userId: string) {
   const data = await res.json();
   return data.signed_url as string;
 }
+
+export async function getConversationToken(userId: string) {
+  if (!ELEVENLABS_API_KEY || !ELEVENLABS_AGENT_ID) {
+    throw new Error('ElevenLabs credentials not configured');
+  }
+
+  const res = await fetch(
+    `https://api.elevenlabs.io/v1/convai/conversation/token?agent_id=${ELEVENLABS_AGENT_ID}&user_id=${encodeURIComponent(userId)}`,
+    {
+      method: 'GET',
+      headers: {
+        'xi-api-key': ELEVENLABS_API_KEY,
+      },
+    }
+  );
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`ElevenLabs conversation token error: ${res.status} ${text}`);
+  }
+
+  const data = await res.json();
+  return data.token as string;
+}
