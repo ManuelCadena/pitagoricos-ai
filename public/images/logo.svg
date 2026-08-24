@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d4af37" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#d4af37" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="50" cy="50" r="48" fill="none" stroke="#d4af37" stroke-width="0.8" opacity="0.3"/>
+  <circle cx="50" cy="50" r="42" fill="url(#glow)"/>
+  <!-- Tetractys: 1+2+3+4=10 -->
+  <g fill="#d4af37">
+    <circle cx="50" cy="20" r="3.5"/>
+    <circle cx="42" cy="34" r="3.5"/>
+    <circle cx="58" cy="34" r="3.5"/>
+    <circle cx="34" cy="48" r="3.5"/>
+    <circle cx="50" cy="48" r="3.5"/>
+    <circle cx="66" cy="48" r="3.5"/>
+    <circle cx="26" cy="62" r="3.5"/>
+    <circle cx="42" cy="62" r="3.5"/>
+    <circle cx="58" cy="62" r="3.5"/>
+    <circle cx="74" cy="62" r="3.5"/>
+  </g>
+  <g stroke="#d4af37" stroke-width="0.6" opacity="0.5" fill="none">
+    <line x1="50" y1="20" x2="42" y2="34"/>
+    <line x1="50" y1="20" x2="58" y2="34"/>
+    <line x1="42" y1="34" x2="34" y2="48"/>
+    <line x1="42" y1="34" x2="50" y2="48"/>
+    <line x1="58" y1="34" x2="50" y2="48"/>
+    <line x1="58" y1="34" x2="66" y2="48"/>
+    <line x1="34" y1="48" x2="26" y2="62"/>
+    <line x1="34" y1="48" x2="42" y2="62"/>
+    <line x1="50" y1="48" x2="42" y2="62"/>
+    <line x1="50" y1="48" x2="58" y2="62"/>
+    <line x1="66" y1="48" x2="58" y2="62"/>
+    <line x1="66" y1="48" x2="74" y2="62"/>
+  </g>
+  <text x="50" y="88" text-anchor="middle" font-family="serif" font-size="8" fill="#f5f0e6" letter-spacing="2">PITAGORICOS.AI</text>
+</svg>

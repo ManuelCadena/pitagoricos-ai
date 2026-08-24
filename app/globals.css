@@ -1,26 +1,52 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a12;
+  --foreground: #f5f0e6;
+  --gold: #d4af37;
+  --gold-light: #f0d878;
+  --marble: #f5f0e6;
+  --deep-blue: #1a237e;
+  --olive: #4a5d23;
+  --muted: rgba(245, 240, 230, 0.6);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-marble: var(--marble);
+  --color-deep-blue: var(--deep-blue);
+  --color-olive: var(--olive);
+  --color-muted: var(--muted);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+}
+
+/* Pythagorean accent utilities */
+.text-gold {
+  color: var(--gold);
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+.bg-gold {
+  background-color: var(--gold);
+}
+
+.border-gold {
+  border-color: var(--gold);
 }

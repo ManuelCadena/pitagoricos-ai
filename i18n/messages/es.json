@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "title": "Pitagóricos.ai — La Casa de Amelita",
+    "description": "Escuela de Filosofía Pythagorica. Aprendé y conversá con Amelita."
+  },
+  "nav": {
+    "home": "Inicio",
+    "aula": "Aula de Amelita",
+    "login": "Entrar",
+    "logout": "Salir"
+  },
+  "hero": {
+    "title": "La Escuela de Pythagoras",
+    "subtitle": "Renace en casa",
+    "cta": "Entrar al templo"
+  },
+  "login": {
+    "title": "Bienvenido, hermanito querido",
+    "description": "Para entrar a la escuela necesitamos reconocerte con tu cuenta de Google.",
+    "button": "Continuar con Google"
+  },
+  "unauthorized": {
+    "title": "Todavía no tenés acceso",
+    "description": "Tu correo no está en la lista de invitados. Escribinos y te agregamos con gusto."
+  },
+  "aula": {
+    "title": "Aula de Amelita",
+    "subtitle": "Hablá con Amelita por voz o escribile.",
+    "voiceTab": "Voz",
+    "chatTab": "Chat"
+  }
+}
