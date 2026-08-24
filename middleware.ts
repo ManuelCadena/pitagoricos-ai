@@ -25,6 +25,7 @@ export default auth((req) => {
   }
 
   const publicPaths = [
+    `/${locale}`,              // Homepage is public
     `/${locale}/login`,
     `/${locale}/no-autorizado`,
     '/api/auth',
@@ -32,11 +33,15 @@ export default auth((req) => {
   const isPublic = publicPaths.some((p) => pathname === p || pathname.startsWith(`${p}/`));
   const isApi = pathname.startsWith('/api/');
   const isStatic = pathname.startsWith('/_next/') || pathname.includes('/static/');
+  
+  // Homepage exact match (allow public access)
+  const isHomepage = pathname === `/${locale}` || pathname === `/${locale}/`;
 
-  if (isStatic || isApi || isPublic) {
+  if (isStatic || isApi || isPublic || isHomepage) {
     return NextResponse.next();
   }
 
+  // Protected routes (like /aula) require authentication
   if (!isLoggedIn) {
     return NextResponse.redirect(new URL(`/${locale}/login`, nextUrl));
   }
