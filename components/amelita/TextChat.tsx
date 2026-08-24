@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState, FormEvent, useRef } from 'react';
-import { Send, AlertCircle } from 'lucide-react';
+import { useEffect, useState, FormEvent, useRef, useCallback } from 'react';
+import { Send, AlertCircle, RefreshCw } from 'lucide-react';
 import { Conversation, type TextConversation } from '@elevenlabs/client';
 
 interface Message {
@@ -9,6 +9,9 @@ interface Message {
   text: string;
   timestamp: number;
 }
+
+const MAX_RECONNECT_ATTEMPTS = 5;
+const BACKOFF_MS = [1000, 2000, 4000, 8000, 15000];
 
 export function TextChat({ userEmail }: { userEmail: string }) {
   const [messages, setMessages] = useState<Message[]>([
@@ -20,78 +23,116 @@ export function TextChat({ userEmail }: { userEmail: string }) {
   ]);
   const [input, setInput] = useState('');
   const [connected, setConnected] = useState(false);
+  const [reconnecting, setReconnecting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const conversationRef = useRef<TextConversation | null>(null);
+  const mountedRef = useRef(true);
+  const attemptsRef = useRef(0);
+  const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  useEffect(() => {
-    let cancelled = false;
+  const connect = useCallback(async () => {
+    if (!mountedRef.current) return;
+    try {
+      const res = await fetch('/api/signed-url');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'No se pudo obtener la URL firmada');
+      if (!mountedRef.current) return;
 
-    async function connect() {
-      try {
-        const res = await fetch('/api/signed-url');
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'No se pudo obtener la URL firmada');
-        if (cancelled) return;
-
-        // textOnly: true → TextConversation: SIN micrófono, SIN audio.
-        // Garantiza separación total del canal de voz.
-        const conv = await Conversation.startSession({
-          signedUrl: data.signedUrl,
-          connectionType: 'websocket',
-          textOnly: true,
-          onConnect: () => {
-            console.log('[TextChat] Connected (text-only)');
-            setConnected(true);
-            setError(null);
-          },
-          onDisconnect: () => {
-            console.log('[TextChat] Disconnected');
-            setConnected(false);
-          },
-          onMessage: (message) => {
-            if (message.source === 'ai' && message.message) {
-              setMessages((prev) => [
-                ...prev,
-                { role: 'agent', text: message.message, timestamp: Date.now() },
-              ]);
-              setLoading(false);
-            }
-          },
-          onError: (err) => {
-            console.error('[TextChat] Error:', err);
-            setError(typeof err === 'string' ? err : 'Error de conexión con Ame');
-            setConnected(false);
-          },
-        });
-
-        if (cancelled) {
-          conv.endSession().catch(() => {});
-          return;
-        }
-        conversationRef.current = conv;
-      } catch (err: any) {
-        console.error('[TextChat] Failed to connect:', err);
-        if (!cancelled) {
-          setError(err.message || 'Error iniciando el chat');
+      const conv = await Conversation.startSession({
+        signedUrl: data.signedUrl,
+        connectionType: 'websocket',
+        textOnly: true,
+        onConnect: ({ conversationId }) => {
+          console.log('[TextChat] Connected (text-only):', conversationId);
+          attemptsRef.current = 0;
+          setConnected(true);
+          setReconnecting(false);
+          setError(null);
+        },
+        onDisconnect: (details) => {
+          // Diagnóstico: reason = 'error' (red) | 'agent' (timeout/limite del agente) | 'user'
+          console.warn('[TextChat] Disconnected:', JSON.stringify(details));
           setConnected(false);
-        }
+          if (!mountedRef.current || details.reason === 'user') return;
+
+          // Reconexión automática con backoff
+          if (attemptsRef.current < MAX_RECONNECT_ATTEMPTS) {
+            const delay = BACKOFF_MS[attemptsRef.current] ?? 15000;
+            attemptsRef.current += 1;
+            setReconnecting(true);
+            console.log(`[TextChat] Reconnecting in ${delay}ms (attempt ${attemptsRef.current})`);
+            reconnectTimerRef.current = setTimeout(() => {
+              if (mountedRef.current) connect();
+            }, delay);
+          } else {
+            setReconnecting(false);
+            setError(
+              details.reason === 'agent'
+                ? 'Ame cerró la sesión por inactividad. Tocá reconectar para seguir.'
+                : 'Conexión perdida. Tocá reconectar para seguir.'
+            );
+          }
+        },
+        onMessage: (message) => {
+          if (message.source === 'ai' && message.message) {
+            setMessages((prev) => [
+              ...prev,
+              { role: 'agent', text: message.message, timestamp: Date.now() },
+            ]);
+            setLoading(false);
+          }
+        },
+        onError: (err) => {
+          console.error('[TextChat] Error:', err);
+        },
+      });
+
+      if (!mountedRef.current) {
+        conv.endSession().catch(() => {});
+        return;
+      }
+      conversationRef.current = conv;
+    } catch (err: any) {
+      console.error('[TextChat] Failed to connect:', err);
+      if (!mountedRef.current) return;
+      if (attemptsRef.current < MAX_RECONNECT_ATTEMPTS) {
+        const delay = BACKOFF_MS[attemptsRef.current] ?? 15000;
+        attemptsRef.current += 1;
+        setReconnecting(true);
+        reconnectTimerRef.current = setTimeout(() => {
+          if (mountedRef.current) connect();
+        }, delay);
+      } else {
+        setReconnecting(false);
+        setError(err.message || 'Error iniciando el chat');
       }
     }
+  }, []);
 
+  useEffect(() => {
+    mountedRef.current = true;
     connect();
-
     return () => {
-      cancelled = true;
+      mountedRef.current = false;
+      if (reconnectTimerRef.current) clearTimeout(reconnectTimerRef.current);
       conversationRef.current?.endSession().catch(() => {});
       conversationRef.current = null;
     };
-  }, []);
+  }, [connect]);
+
+  const manualReconnect = () => {
+    setError(null);
+    attemptsRef.current = 0;
+    setReconnecting(true);
+    connect();
+  };
 
   function sendMessage(e: FormEvent) {
     e.preventDefault();
@@ -115,20 +156,40 @@ export function TextChat({ userEmail }: { userEmail: string }) {
   return (
     <div className="flex flex-col h-[65vh] sm:h-[60vh]">
       {/* Estado de conexión */}
-      <div className="mb-3 flex items-center justify-between text-xs">
-        <div className="flex items-center gap-2">
-          <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-400'} ${connected ? '' : 'animate-pulse'}`} />
-          <span className="text-[rgb(var(--color-stone))] font-light">
-            {connected ? 'Conectado' : error ? 'Error' : 'Conectando...'}
+      <div className="mb-3 flex items-center justify-between text-xs gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <div
+            className={`w-2 h-2 rounded-full shrink-0 ${
+              connected ? 'bg-green-500' : reconnecting ? 'bg-amber-400 animate-pulse' : 'bg-red-400'
+            }`}
+          />
+          <span className="text-[rgb(var(--color-stone))] font-light truncate">
+            {connected
+              ? 'Conectado'
+              : reconnecting
+                ? `Reconectando... (intento ${attemptsRef.current})`
+                : error
+                  ? 'Desconectado'
+                  : 'Conectando...'}
           </span>
         </div>
         {error && (
-          <div className="flex items-center gap-1 text-red-500">
-            <AlertCircle className="w-3 h-3" />
-            <span className="max-w-[200px] truncate">{error}</span>
-          </div>
+          <button
+            onClick={manualReconnect}
+            className="flex items-center gap-1.5 px-3 py-1.5 min-h-[32px] text-[rgb(var(--color-depth))] border border-[rgb(var(--color-depth))] rounded-full hover:bg-[rgb(var(--color-sky))] transition-colors shrink-0"
+          >
+            <RefreshCw className="w-3 h-3" />
+            Reconectar
+          </button>
         )}
       </div>
+
+      {error && (
+        <div className="mb-3 flex items-center gap-2 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+          <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
 
       {/* Mensajes */}
       <div className="flex-1 overflow-y-auto space-y-3 sm:space-y-4 pr-1 sm:pr-2 mb-4">
@@ -159,9 +220,10 @@ export function TextChat({ userEmail }: { userEmail: string }) {
           value={input}
           onChange={(e) => {
             setInput(e.target.value);
+            // Señal de presencia: evita que el agente cierre por inactividad mientras tecleás
             conversationRef.current?.sendUserActivity();
           }}
-          placeholder={connected ? 'Escribile a Ame...' : 'Conectando...'}
+          placeholder={connected ? 'Escribile a Ame...' : reconnecting ? 'Reconectando...' : 'Sin conexión'}
           disabled={!connected}
           className="flex-1 min-h-[48px] bg-[rgb(var(--color-white))] border border-[rgb(var(--color-cloud))] rounded-full px-4 sm:px-5 py-3 text-sm text-[rgb(var(--color-charcoal))] placeholder:text-[rgb(var(--color-stone))] focus:outline-none focus:border-[rgb(var(--color-depth))] disabled:opacity-50"
         />
