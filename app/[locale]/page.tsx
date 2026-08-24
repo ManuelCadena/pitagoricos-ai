@@ -1,164 +1,193 @@
-import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import Image from 'next/image';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale });
+  const es = locale === 'es';
 
   return (
     <div className="min-h-screen bg-[rgb(var(--color-charcoal))]">
-      {/* Language switcher: floating top-right, minimal */}
+      {/* Language switcher: floating, discrete */}
       <div className="fixed top-8 right-8 z-50">
         <LanguageSwitcher currentLocale={locale} />
       </div>
 
-      {/* TURRELL EXPERIENCE: Imagen como portal de luz, sin distracciones */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* La imagen ES la experiencia — sin overlays agresivos */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Image
-            src="/images/pythagorean-temple.jpg"
-            alt="Pythagorean Temple of Light"
-            fill
-            priority
-            className="object-cover"
-            quality={100}
-          />
-        </div>
+      {/* ══════════════════════════════════════════════════
+          I. EL UMBRAL — Skyspace crepuscular sobre el agua
+          Turrell: el crepúsculo como pigmento
+          Pitágoras: el cielo reflejado en el alma quieta
+      ══════════════════════════════════════════════════ */}
+      <section className="relative h-screen overflow-hidden">
+        <Image
+          src="/images/skyspace-hero.jpg"
+          alt={es ? 'Skyspace pitagórico al crepúsculo' : 'Pythagorean skyspace at twilight'}
+          fill
+          priority
+          className="object-cover"
+          quality={100}
+        />
 
-        {/* Contenido: MÍNIMO, solo lo esencial, flotando sobre la luz */}
-        <div className="relative z-10 flex flex-col items-center justify-center h-full px-6">
-          {/* Espacio superior: respiración */}
-          <div className="flex-1" />
-
-          {/* Título: ultra-minimal, sin competir con la imagen */}
-          <div className="text-center space-y-8 max-w-3xl">
-            <h1 className="text-6xl md:text-8xl font-extralight text-[rgb(var(--color-white))] tracking-tight leading-none drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-              {locale === 'es' ? 'Pitágoras' : 'Pythagoras'}
+        {/* Contenido: mínimo absoluto, posicionado en el tercio inferior
+            para no competir con el óculo ni el agua */}
+        <div className="absolute inset-x-0 bottom-0 z-10 pb-24 px-6">
+          <div className="max-w-4xl mx-auto text-center space-y-6">
+            <p className="text-xs font-light text-[rgb(var(--color-white)_/_0.7)] tracking-[0.4em] uppercase">
+              ΠΥΘΑΓΟΡΕΙΟΝ
+            </p>
+            <h1 className="text-5xl md:text-7xl font-extralight text-[rgb(var(--color-white))] tracking-tight leading-none drop-shadow-[0_2px_20px_rgba(0,0,0,0.4)]">
+              {es ? 'La Escuela de Pitágoras' : 'The School of Pythagoras'}
             </h1>
-            
-            <p className="text-lg md:text-xl font-light text-[rgb(var(--color-white)_/_0.9)] tracking-wide drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
-              {locale === 'es' ? 'La escuela renace' : 'The school reborn'}
+            <p className="text-base md:text-lg font-light text-[rgb(var(--color-white)_/_0.85)] tracking-wide">
+              {es ? 'Renace, guiada por la luz' : 'Reborn, guided by light'}
             </p>
-          </div>
-
-          {/* Espacio medio: más respiración */}
-          <div className="flex-1" />
-
-          {/* CTA: minimal, casi invisible hasta hover */}
-          <div className="pb-20">
-            <Link
-              href={`/${locale}/aula`}
-              className="group inline-flex items-center gap-3 px-10 py-4 bg-[rgb(var(--color-white)_/_0.05)] backdrop-blur-xl text-[rgb(var(--color-white))] rounded-full font-light text-sm tracking-widest uppercase border border-[rgb(var(--color-white)_/_0.2)] hover:bg-[rgb(var(--color-white)_/_0.15)] hover:border-[rgb(var(--color-white)_/_0.4)] transition-all duration-700"
-            >
-              {locale === 'es' ? 'Entrar' : 'Enter'}
-              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </Link>
           </div>
         </div>
 
-        {/* Scroll indicator: casi invisible, solo un hint */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-30 animate-pulse">
-          <div className="w-px h-12 bg-gradient-to-b from-transparent via-[rgb(var(--color-white))] to-transparent" />
+        {/* Scroll hint: una sola línea vertical de luz */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 opacity-40">
+          <div className="w-px h-10 bg-gradient-to-b from-transparent via-[rgb(var(--color-white))] to-transparent animate-pulse" />
         </div>
       </section>
 
-      {/* SECCIÓN 2: Espacio contemplativo — transición suave */}
-      <section className="relative min-h-screen flex items-center justify-center py-32 px-6 bg-gradient-to-b from-[rgb(var(--color-charcoal))] via-[rgb(30,30,40)] to-[rgb(var(--color-paper))]">
-        <div className="max-w-4xl mx-auto text-center space-y-16">
-          {/* Principio Turrell: espacio antes de contenido */}
-          <div className="h-32" />
-
-          {/* Texto: minimal, contemplativo */}
-          <div className="space-y-12">
-            <h2 className="text-4xl md:text-6xl font-extralight text-[rgb(var(--color-white))] tracking-tight leading-tight">
-              {locale === 'es' 
-                ? 'Un espacio para contemplar' 
-                : 'A space to contemplate'}
-            </h2>
-            
-            <p className="text-lg md:text-xl font-light text-[rgb(var(--color-white)_/_0.7)] leading-relaxed max-w-2xl mx-auto">
-              {locale === 'es'
-                ? 'La filosofía pitagórica renace en un templo de luz. Amelita te acompaña en el silencio.'
-                : 'Pythagorean philosophy reborn in a temple of light. Amelita walks with you in silence.'}
-            </p>
-          </div>
-
-          {/* Espacio después de contenido */}
-          <div className="h-32" />
+      {/* ══════════════════════════════════════════════════
+          II. EL SILENCIO — Espacio contemplativo
+          Turrell: "I want you to sense yourself sensing"
+          Pitágoras: el silencio del iniciado
+      ══════════════════════════════════════════════════ */}
+      <section className="relative flex items-center justify-center py-48 px-6 bg-[rgb(var(--color-charcoal))]">
+        <div className="max-w-3xl mx-auto text-center space-y-10">
+          <p className="text-2xl md:text-4xl font-extralight text-[rgb(var(--color-white)_/_0.9)] leading-relaxed tracking-wide">
+            {es
+              ? 'El alma que contempla la armonía del cosmos se ordena a sí misma.'
+              : 'The soul that contemplates the harmony of the cosmos brings order to itself.'}
+          </p>
+          <div className="w-10 h-px bg-[rgb(var(--color-twilight))] mx-auto" />
+          <p className="text-sm font-light text-[rgb(var(--color-white)_/_0.5)] tracking-[0.3em] uppercase">
+            {es ? 'Tradición pitagórica' : 'Pythagorean tradition'}
+          </p>
         </div>
       </section>
 
-      {/* SECCIÓN 3: Tres principios — cards minimalistas sobre fondo claro */}
+      {/* ══════════════════════════════════════════════════
+          III. LOS TRES PILARES — Número, Armonía, Guía
+          Sobre fondo claro: la salida del espacio oscuro
+          hacia el conocimiento (caverna → luz)
+      ══════════════════════════════════════════════════ */}
+      <div className="h-40 bg-gradient-to-b from-[rgb(var(--color-charcoal))] to-[rgb(var(--color-paper))]" />
       <section className="relative py-32 px-6 bg-[rgb(var(--color-paper))]">
         <div className="max-w-6xl mx-auto">
-          {/* Título de sección: ultra-minimal */}
-          <div className="text-center mb-24 space-y-6">
-            <h2 className="text-3xl md:text-5xl font-extralight text-[rgb(var(--color-charcoal))] tracking-tight">
-              {locale === 'es' ? 'Tres principios' : 'Three principles'}
-            </h2>
-            <div className="w-12 h-px bg-[rgb(var(--color-depth))] mx-auto" />
-          </div>
-
-          {/* Cards: extrema simplicidad */}
-          <div className="grid md:grid-cols-3 gap-16 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-20 max-w-5xl mx-auto">
             {/* Tetractys */}
             <div className="text-center space-y-6">
-              <div className="text-7xl font-extralight text-[rgb(var(--color-depth))]">
-                ∴
+              {/* Tetractys de 10 puntos, dibujada en SVG puro */}
+              <div className="flex justify-center">
+                <svg width="80" height="72" viewBox="0 0 80 72" className="opacity-80">
+                  <circle cx="40" cy="8" r="3" fill="rgb(147,197,253)" />
+                  <circle cx="30" cy="26" r="3" fill="rgb(147,197,253)" />
+                  <circle cx="50" cy="26" r="3" fill="rgb(147,197,253)" />
+                  <circle cx="20" cy="44" r="3" fill="rgb(165,180,252)" />
+                  <circle cx="40" cy="44" r="3" fill="rgb(165,180,252)" />
+                  <circle cx="60" cy="44" r="3" fill="rgb(165,180,252)" />
+                  <circle cx="10" cy="62" r="3" fill="rgb(192,132,252)" />
+                  <circle cx="30" cy="62" r="3" fill="rgb(192,132,252)" />
+                  <circle cx="50" cy="62" r="3" fill="rgb(192,132,252)" />
+                  <circle cx="70" cy="62" r="3" fill="rgb(192,132,252)" />
+                </svg>
               </div>
-              <h3 className="text-xl font-light text-[rgb(var(--color-charcoal))] tracking-wide">
-                Tetractys
+              <h3 className="text-lg font-light text-[rgb(var(--color-charcoal))] tracking-[0.2em] uppercase">
+                {es ? 'Número' : 'Number'}
               </h3>
-              <p className="text-[rgb(var(--color-slate))] font-light leading-relaxed">
-                {locale === 'es'
-                  ? 'El número sagrado: 1, 2, 3, 4 = 10'
-                  : 'The sacred number: 1, 2, 3, 4 = 10'}
+              <p className="text-sm text-[rgb(var(--color-stone))] font-light leading-relaxed max-w-xs mx-auto">
+                {es
+                  ? 'La tetractys: 1 + 2 + 3 + 4 = 10. La estructura que hace cognoscible el mundo.'
+                  : 'The tetractys: 1 + 2 + 3 + 4 = 10. The structure that makes the world knowable.'}
               </p>
             </div>
 
             {/* Armonía */}
             <div className="text-center space-y-6">
-              <div className="text-7xl font-extralight text-[rgb(var(--color-twilight))]">
-                ○
+              {/* Monocorde: proporciones musicales 1:2, 2:3, 3:4 */}
+              <div className="flex justify-center items-end gap-2 h-[72px]">
+                <div className="w-px h-12 bg-[rgb(147,197,253)]" />
+                <div className="w-px h-8 bg-[rgb(165,180,252)]" />
+                <div className="w-px h-9 bg-[rgb(165,180,252)]" />
+                <div className="w-px h-6 bg-[rgb(192,132,252)]" />
               </div>
-              <h3 className="text-xl font-light text-[rgb(var(--color-charcoal))] tracking-wide">
-                {locale === 'es' ? 'Armonía' : 'Harmony'}
+              <h3 className="text-lg font-light text-[rgb(var(--color-charcoal))] tracking-[0.2em] uppercase">
+                {es ? 'Armonía' : 'Harmony'}
               </h3>
-              <p className="text-[rgb(var(--color-slate))] font-light leading-relaxed">
-                {locale === 'es'
-                  ? 'La proporción musical del cosmos'
-                  : 'The musical proportion of cosmos'}
+              <p className="text-sm text-[rgb(var(--color-stone))] font-light leading-relaxed max-w-xs mx-auto">
+                {es
+                  ? 'Octava, quinta, cuarta: el cosmos afinado como una lira. La música de las esferas.'
+                  : 'Octave, fifth, fourth: the cosmos tuned like a lyre. The music of the spheres.'}
               </p>
             </div>
 
             {/* Amelita */}
             <div className="text-center space-y-6">
-              <div className="text-7xl font-extralight text-[rgb(var(--color-dusk))]">
-                ◇
+              {/* Círculos concéntricos: la presencia */}
+              <div className="flex justify-center items-center h-[72px]">
+                <div className="relative w-16 h-16 flex items-center justify-center">
+                  <div className="absolute w-16 h-16 rounded-full border border-[rgb(147,197,253)_/_0.4]" />
+                  <div className="absolute w-10 h-10 rounded-full border border-[rgb(165,180,252)_/_0.6]" />
+                  <div className="absolute w-2 h-2 rounded-full bg-[rgb(192,132,252)]" />
+                </div>
               </div>
-              <h3 className="text-xl font-light text-[rgb(var(--color-charcoal))] tracking-wide">
+              <h3 className="text-lg font-light text-[rgb(var(--color-charcoal))] tracking-[0.2em] uppercase">
                 Amelita
               </h3>
-              <p className="text-[rgb(var(--color-slate))] font-light leading-relaxed">
-                {locale === 'es'
-                  ? 'Tu guía en el camino pitagórico'
-                  : 'Your guide on the Pythagorean path'}
+              <p className="text-sm text-[rgb(var(--color-stone))] font-light leading-relaxed max-w-xs mx-auto">
+                {es
+                  ? 'Tu maestra y guía. La voz que acompaña tu camino por la sabiduría pitagórica.'
+                  : 'Your teacher and guide. The voice that walks with you along the Pythagorean path.'}
               </p>
             </div>
           </div>
         </div>
       </section>
 
+      {/* ══════════════════════════════════════════════════
+          IV. EL DODECAEDRO — Umbral hacia el aula
+          El sólido del cosmos invita a entrar
+      ══════════════════════════════════════════════════ */}
+      <section className="relative h-[90vh] overflow-hidden">
+        <Image
+          src="/images/dodecahedron-hall.jpg"
+          alt={es ? 'Sala del dodecaedro' : 'Dodecahedron hall'}
+          fill
+          className="object-cover"
+          quality={95}
+        />
+        {/* Velo sutil solo en la base para el CTA */}
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[rgba(0,0,0,0.5)] to-transparent" />
+
+        <div className="absolute inset-x-0 bottom-0 z-10 pb-20 px-6">
+          <div className="max-w-3xl mx-auto text-center space-y-8">
+            <p className="text-lg md:text-xl font-light text-[rgb(var(--color-white)_/_0.9)] tracking-wide drop-shadow-md">
+              {es ? 'El aula te espera' : 'The classroom awaits'}
+            </p>
+            <Link
+              href={`/${locale}/aula`}
+              className="group inline-flex items-center gap-3 px-12 py-4 bg-[rgb(var(--color-white)_/_0.08)] backdrop-blur-xl text-[rgb(var(--color-white))] rounded-full font-light text-sm tracking-[0.3em] uppercase border border-[rgb(var(--color-white)_/_0.25)] hover:bg-[rgb(var(--color-white)_/_0.18)] hover:border-[rgb(var(--color-white)_/_0.5)] transition-all duration-700"
+            >
+              {es ? 'Entrar' : 'Enter'}
+              <svg className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Footer: minimal */}
-      <footer className="py-12 px-6 bg-[rgb(var(--color-cloud))] border-t border-[rgb(var(--color-cloud))]">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-xs font-light text-[rgb(var(--color-stone))] tracking-widest uppercase">
+      <footer className="py-10 px-6 bg-[rgb(var(--color-charcoal))]">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <p className="text-xs font-light text-[rgb(var(--color-white)_/_0.4)] tracking-[0.3em] uppercase">
             Fooworks LLC
+          </p>
+          <p className="text-xs font-light text-[rgb(var(--color-white)_/_0.4)] tracking-[0.3em] uppercase">
+            ΚΟΣΜΟΣ · ΑΡΜΟΝΙΑ
           </p>
         </div>
       </footer>
