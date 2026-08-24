@@ -3,7 +3,7 @@ import { LoginButton } from '@/components/auth/LoginButton';
 
 export default async function LoginPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const t = await getTranslations('login');
+  const t = await getTranslations({ locale, namespace: 'login' });
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">

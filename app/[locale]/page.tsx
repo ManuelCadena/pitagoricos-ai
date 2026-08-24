@@ -4,7 +4,7 @@ import { HeroScene } from '@/components/temple/HeroScene';
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const t = await getTranslations();
+  const t = await getTranslations({ locale });
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -26,21 +26,27 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       <section className="relative z-10 max-w-5xl mx-auto px-6 py-20 grid md:grid-cols-3 gap-8 text-center">
         <div className="p-6 rounded-2xl border border-gold/20 bg-background/60 backdrop-blur-sm">
-          <h3 className="text-gold text-xl font-serif mb-3">El Tetractys</h3>
+          <h3 className="text-gold text-xl font-serif mb-3">{locale === 'es' ? 'El Tetractys' : 'The Tetractys'}</h3>
           <p className="text-muted text-sm">
-            El Número sagrado que resume toda la creación: 1, 2, 3, 4 = 10.
+            {locale === 'es'
+              ? 'El Número sagrado que resume toda la creación: 1, 2, 3, 4 = 10.'
+              : 'The sacred Number that sums all creation: 1, 2, 3, 4 = 10.'}
           </p>
         </div>
         <div className="p-6 rounded-2xl border border-gold/20 bg-background/60 backdrop-blur-sm">
-          <h3 className="text-gold text-xl font-serif mb-3">La Armonía</h3>
+          <h3 className="text-gold text-xl font-serif mb-3">{locale === 'es' ? 'La Armonía' : 'Harmony'}</h3>
           <p className="text-muted text-sm">
-            La proporción musical como ley del alma y del cosmos.
+            {locale === 'es'
+              ? 'La proporción musical como ley del alma y del cosmos.'
+              : 'Musical proportion as the law of soul and cosmos.'}
           </p>
         </div>
         <div className="p-6 rounded-2xl border border-gold/20 bg-background/60 backdrop-blur-sm">
           <h3 className="text-gold text-xl font-serif mb-3">Amelita</h3>
           <p className="text-muted text-sm">
-            Maestra viva de la Sabiduría Pythagorica, lista para acompañarte.
+            {locale === 'es'
+              ? 'Maestra viva de la Sabiduría Pythagorica, lista para acompañarte.'
+              : 'A living teacher of Pythagorean Wisdom, ready to walk with you.'}
           </p>
         </div>
       </section>

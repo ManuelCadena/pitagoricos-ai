@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default async function UnauthorizedPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const t = await getTranslations('unauthorized');
+  const t = await getTranslations({ locale, namespace: 'unauthorized' });
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6">

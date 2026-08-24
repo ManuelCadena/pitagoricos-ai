@@ -15,7 +15,7 @@ export default async function AulaPage({ params }: { params: Promise<{ locale: s
     redirect(`/${locale}/no-autorizado`);
   }
 
-  const t = await getTranslations('aula');
+  const t = await getTranslations({ locale, namespace: 'aula' });
 
   return (
     <div className="min-h-screen pt-24 pb-12 px-6">
