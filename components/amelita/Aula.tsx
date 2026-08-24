@@ -20,13 +20,13 @@ export function Aula({ locale }: { locale: string }) {
   }
 
   return (
-    <div className="space-y-12">
-      {/* Mode selector: minimal tabs */}
+    <div className="space-y-8 sm:space-y-12">
+      {/* Mode selector: minimal tabs (touch-friendly ≥44px) */}
       <div className="flex justify-center">
-        <div className="inline-flex gap-2 p-1 bg-[rgb(var(--color-cloud))] rounded-full">
+        <div className="inline-flex gap-1 sm:gap-2 p-1 bg-[rgb(var(--color-cloud))] rounded-full">
           <button
             onClick={() => setActiveMode('voice')}
-            className={`px-8 py-3 rounded-full text-sm font-light tracking-wide transition-all ${
+            className={`px-6 sm:px-8 py-3 min-h-[44px] rounded-full text-sm font-light tracking-wide transition-all ${
               activeMode === 'voice'
                 ? 'bg-[rgb(var(--color-white))] text-[rgb(var(--color-charcoal))] shadow-sm'
                 : 'text-[rgb(var(--color-stone))] hover:text-[rgb(var(--color-slate))]'
@@ -36,7 +36,7 @@ export function Aula({ locale }: { locale: string }) {
           </button>
           <button
             onClick={() => setActiveMode('text')}
-            className={`px-8 py-3 rounded-full text-sm font-light tracking-wide transition-all ${
+            className={`px-6 sm:px-8 py-3 min-h-[44px] rounded-full text-sm font-light tracking-wide transition-all ${
               activeMode === 'text'
                 ? 'bg-[rgb(var(--color-white))] text-[rgb(var(--color-charcoal))] shadow-sm'
                 : 'text-[rgb(var(--color-stone))] hover:text-[rgb(var(--color-slate))]'
@@ -48,7 +48,7 @@ export function Aula({ locale }: { locale: string }) {
       </div>
 
       {/* Content: minimal card */}
-      <div className="card-minimal rounded-3xl p-12">
+      <div className="card-minimal rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-12">
         {activeMode === 'voice' ? (
           <VoiceWidget userEmail={session.user.email} />
         ) : (
