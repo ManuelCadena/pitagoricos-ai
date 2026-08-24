@@ -31,7 +31,7 @@ DATABASE_URL=file:./prisma/pitagoricos.db
 ENVEOF
 
 if [[ -f .env.local ]]; then
-  grep -E '^[A-Z_]+=' .env.local >> "/tmp/${ENV_FILE}"
+  grep -E '^(AUTH_|ELEVENLABS_|ALLOWED_|NEXT_PUBLIC_)' .env.local >> "/tmp/${ENV_FILE}"
 fi
 
 aws s3 cp "/tmp/${ENV_FILE}" "s3://${BUCKET}/pitagoricos-ai/${ENV_FILE}"

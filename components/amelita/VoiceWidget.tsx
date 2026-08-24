@@ -2,34 +2,34 @@
 
 import { useEffect, useState } from 'react';
 import { Mic, MicOff } from 'lucide-react';
+import { Conversation } from '@elevenlabs/client';
 
 export function VoiceWidget({ userEmail }: { userEmail: string }) {
-  const [signedUrl, setSignedUrl] = useState<string | null>(null);
+  const [conversation, setConversation] = useState<Awaited<ReturnType<typeof Conversation.startSession>> | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(false);
+  const [signedUrl, setSignedUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    async function loadSignedUrl() {
+    // Get signed URL from API
+    async function fetchSignedUrl() {
       try {
         const res = await fetch('/api/signed-url');
         const data = await res.json();
         
         if (!res.ok) {
-          throw new Error(data.error || 'Failed to load signed URL');
+          throw new Error(data.error || 'Failed to get signed URL');
         }
         
-        console.log('[VoiceWidget] Signed URL loaded successfully');
         setSignedUrl(data.signedUrl);
       } catch (err: any) {
         console.error('[VoiceWidget] Error loading signed URL:', err);
-        setError(err.message || 'Error loading voice widget');
-      } finally {
-        setLoading(false);
+        setError(err.message || 'Error cargando configuración');
       }
     }
     
-    loadSignedUrl();
+    fetchSignedUrl();
   }, []);
 
   const startConversation = async () => {
@@ -39,55 +39,58 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
     }
 
     try {
-      setIsActive(true);
-      
-      // Load ElevenLabs SDK if not already loaded
-      if (!window.ElevenLabs) {
-        const script = document.createElement('script');
-        script.src = 'https://elevenlabs.io/convai-widget/index.js';
-        script.async = true;
-        await new Promise((resolve, reject) => {
-          script.onload = resolve;
-          script.onerror = reject;
-          document.body.appendChild(script);
-        });
-      }
+      setLoading(true);
+      setError(null);
 
-      // Start conversation
-      if (!window.ElevenLabs?.Conversation) {
-        throw new Error('ElevenLabs SDK no se cargó correctamente');
-      }
+      // Request microphone permission
+      await navigator.mediaDevices.getUserMedia({ audio: true });
 
-      await window.ElevenLabs.Conversation.startSession({
+      // Start conversation with ElevenLabs
+      const conv = await Conversation.startSession({
         signedUrl,
         onConnect: () => {
           console.log('[VoiceWidget] Connected to Amelita');
+          setIsActive(true);
+          setLoading(false);
         },
         onDisconnect: () => {
           console.log('[VoiceWidget] Disconnected from Amelita');
           setIsActive(false);
+          setConversation(null);
         },
-        onError: (error: any) => {
+        onError: (error) => {
           console.error('[VoiceWidget] Error:', error);
-          setError('Error en la conversación con Amelita');
+          setError(typeof error === 'string' ? error : 'Error en la conversación con Amelita');
           setIsActive(false);
+          setLoading(false);
+        },
+        onModeChange: (mode) => {
+          console.log('[VoiceWidget] Mode changed:', mode);
         },
       });
+
+      setConversation(conv);
     } catch (err: any) {
       console.error('[VoiceWidget] Failed to start conversation:', err);
       setError(err.message || 'No se pudo iniciar la conversación');
       setIsActive(false);
+      setLoading(false);
     }
   };
 
-  const stopConversation = () => {
-    if (window.ElevenLabs?.Conversation) {
-      window.ElevenLabs.Conversation.endSession();
+  const stopConversation = async () => {
+    if (conversation) {
+      try {
+        await conversation.endSession();
+        setConversation(null);
+        setIsActive(false);
+      } catch (err) {
+        console.error('[VoiceWidget] Error ending conversation:', err);
+      }
     }
-    setIsActive(false);
   };
 
-  if (loading) {
+  if (!signedUrl && !error) {
     return (
       <div className="flex items-center justify-center h-64 text-gold animate-pulse">
         Invocando a Amelita...
@@ -120,11 +123,16 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
             🎙️ Amelita está escuchando...
           </p>
         )}
+        {loading && (
+          <p className="text-gold text-sm">
+            Conectando con Amelita...
+          </p>
+        )}
       </div>
 
       <button
         onClick={isActive ? stopConversation : startConversation}
-        disabled={!signedUrl}
+        disabled={loading || !signedUrl}
         className={`
           relative w-24 h-24 rounded-full flex items-center justify-center
           transition-all duration-300 shadow-2xl
@@ -135,7 +143,9 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
           disabled:opacity-50 disabled:cursor-not-allowed
         `}
       >
-        {isActive ? (
+        {loading ? (
+          <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin" />
+        ) : isActive ? (
           <MicOff className="w-10 h-10 text-white" />
         ) : (
           <Mic className="w-10 h-10 text-background" />
@@ -143,20 +153,12 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
       </button>
 
       <p className="text-sm text-muted">
-        {isActive ? 'Presioná para terminar la conversación' : 'Presioná para hablar con Amelita'}
+        {loading 
+          ? 'Conectando...' 
+          : isActive 
+            ? 'Presioná para terminar la conversación' 
+            : 'Presioná para hablar con Amelita'}
       </p>
     </div>
   );
-}
-
-// Type declarations for ElevenLabs SDK
-declare global {
-  interface Window {
-    ElevenLabs?: {
-      Conversation: {
-        startSession: (config: any) => Promise<void>;
-        endSession: () => void;
-      };
-    };
-  }
 }
