@@ -187,3 +187,22 @@ server {
 **Estado**: PRODUCCIÓN-VERIFICADO  
 **Confianza**: Alta  
 **Próximo paso**: Usuario debe probar login con `jose@manuelcadena.com` y acceder al aula de Amelita.
+
+---
+
+## E2E Memoria y Sesiones — 2026-08-24 (SHA 562b030)
+
+| Test | Resultado | Evidencia |
+|---|---|---|
+| T1 Build + tipos | ✅ | exit 0, rutas /api/{sessions,sessions/end,memory} generadas |
+| T2 Endpoints protegidos (prod, externo) | ✅ | /api/sessions → 401, /api/memory → 401, /api/sessions/end → 401 |
+| T3 Lógica de memoria (local) | ✅ 12/12 | scripts/test-memory.mts: perfil acumulado, contexto, retoma, primera sesión null |
+| T4 Sync real ElevenLabs | ✅ | conv_8701… → status done, 3 msgs, summary presente |
+| T5 DB persistente post-deploy | ✅ | /opt/chatita-aion/data/pitagoricos-ai/pitagoricos.db creada, migración aplicada |
+| E2E pipeline producción | ✅ 5/5 | usuario allowlisted upsert → EL fetch 200 → conversation synced → perfil 462 chars |
+| Homepage externa | ✅ | https://pitagoricos.ai/es → 200 |
+
+### Pendiente de validación por usuario (T6/T7)
+1. Login → aula → conversación (texto o voz) mencionando un dato personal → cerrar
+2. Nueva sesión → Ame debe retomar el contexto automáticamente
+3. Lista "Sesiones anteriores" → botón "Retomar" → Ame reconoce el tema de esa sesión
