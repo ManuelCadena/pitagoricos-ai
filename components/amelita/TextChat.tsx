@@ -71,7 +71,7 @@ export function TextChat({ userEmail }: { userEmail: string }) {
           },
           onError: (err) => {
             console.error('[TextChat] Error:', err);
-            setError(typeof err === 'string' ? err : 'Error de conexión con Amelita');
+            setError(typeof err === 'string' ? err : 'Error de conexión con Ame');
             setConnected(false);
           },
         });
@@ -158,7 +158,7 @@ export function TextChat({ userEmail }: { userEmail: string }) {
         ))}
         {loading && (
           <div className="mr-auto border border-gold/20 bg-background/80 rounded-2xl px-5 py-3 text-gold animate-pulse">
-            Amelita está pensando...
+            Ame está pensando...
           </div>
         )}
         <div ref={bottomRef} />

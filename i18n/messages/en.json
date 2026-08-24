@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "title": "Pitagóricos.ai — The Home of Amelita",
-    "description": "School of Pythagorean Philosophy. Learn and converse with Amelita."
+    "title": "Pitagóricos.ai — The Home of Ame",
+    "description": "School of Pythagorean Philosophy. Learn and converse with Ame."
   },
   "nav": {
     "home": "Home",
-    "aula": "Amelita's Classroom",
+    "aula": "Ame's Classroom",
     "login": "Sign in",
     "logout": "Sign out"
   },
@@ -24,8 +24,8 @@
     "description": "Your email is not on the guest list. Write to us and we will gladly add you."
   },
   "aula": {
-    "title": "Amelita's Classroom",
-    "subtitle": "Talk to Amelita by voice or write to her.",
+    "title": "Ame's Classroom",
+    "subtitle": "Talk to Ame by voice or write to her.",
     "voiceTab": "Voice",
     "chatTab": "Chat"
   }

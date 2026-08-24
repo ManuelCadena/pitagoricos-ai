@@ -127,7 +127,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </p>
             </div>
 
-            {/* Amelita */}
+            {/* Ame */}
             <div className="text-center space-y-6">
               {/* Círculos concéntricos: la presencia */}
               <div className="flex justify-center items-center h-[72px]">
@@ -138,7 +138,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </div>
               </div>
               <h3 className="text-lg font-light text-[rgb(var(--color-charcoal))] tracking-[0.2em] uppercase">
-                Amelita
+                Ame
               </h3>
               <p className="text-sm text-[rgb(var(--color-stone))] font-light leading-relaxed max-w-xs mx-auto">
                 {es

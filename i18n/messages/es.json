@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "title": "Pitagóricos.ai — La Casa de Amelita",
-    "description": "Escuela de Filosofía Pythagorica. Aprendé y conversá con Amelita."
+    "title": "Pitagóricos.ai — La Casa de Ame",
+    "description": "Escuela de Filosofía Pythagorica. Aprendé y conversá con Ame."
   },
   "nav": {
     "home": "Inicio",
-    "aula": "Aula de Amelita",
+    "aula": "Aula de Ame",
     "login": "Entrar",
     "logout": "Salir"
   },
@@ -24,8 +24,8 @@
     "description": "Tu correo no está en la lista de invitados. Escribinos y te agregamos con gusto."
   },
   "aula": {
-    "title": "Aula de Amelita",
-    "subtitle": "Hablá con Amelita por voz o escribile.",
+    "title": "Aula de Ame",
+    "subtitle": "Hablá con Ame por voz o escribile.",
     "voiceTab": "Voz",
     "chatTab": "Chat"
   }

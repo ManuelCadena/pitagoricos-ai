@@ -49,18 +49,18 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
       const conv = await Conversation.startSession({
         signedUrl,
         onConnect: () => {
-          console.log('[VoiceWidget] Connected to Amelita');
+          console.log('[VoiceWidget] Connected to Ame');
           setIsActive(true);
           setLoading(false);
         },
         onDisconnect: () => {
-          console.log('[VoiceWidget] Disconnected from Amelita');
+          console.log('[VoiceWidget] Disconnected from Ame');
           setIsActive(false);
           setConversation(null);
         },
         onError: (error) => {
           console.error('[VoiceWidget] Error:', error);
-          setError(typeof error === 'string' ? error : 'Error en la conversación con Amelita');
+          setError(typeof error === 'string' ? error : 'Error en la conversación con Ame');
           setIsActive(false);
           setLoading(false);
         },
@@ -93,7 +93,7 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
   if (!signedUrl && !error) {
     return (
       <div className="flex items-center justify-center h-64 text-gold animate-pulse">
-        Invocando a Amelita...
+        Invocando a Ame...
       </div>
     );
   }
@@ -116,16 +116,16 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
     <div className="flex flex-col items-center gap-6">
       <div className="text-center max-w-lg space-y-4">
         <p className="text-muted">
-          Presioná el botón del micrófono para hablar con Amelita. La conversación es privada y se guarda para tu seguimiento personal.
+          Presioná el botón del micrófono para hablar con Ame. La conversación es privada y se guarda para tu seguimiento personal.
         </p>
         {isActive && (
           <p className="text-gold text-sm animate-pulse">
-            🎙️ Amelita está escuchando...
+            🎙️ Ame está escuchando...
           </p>
         )}
         {loading && (
           <p className="text-gold text-sm">
-            Conectando con Amelita...
+            Conectando con Ame...
           </p>
         )}
       </div>
@@ -157,7 +157,7 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
           ? 'Conectando...' 
           : isActive 
             ? 'Presioná para terminar la conversación' 
-            : 'Presioná para hablar con Amelita'}
+            : 'Presioná para hablar con Ame'}
       </p>
     </div>
   );
