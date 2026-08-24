@@ -9,7 +9,20 @@ export default auth((req) => {
 
   const pathname = nextUrl.pathname;
   const firstSegment = pathname.split('/')[1];
+  
+  // Redirect root to default locale
+  if (pathname === '/') {
+    const acceptLanguage = req.headers.get('accept-language') || '';
+    const preferredLocale = acceptLanguage.startsWith('en') ? 'en' : defaultLocale;
+    return NextResponse.redirect(new URL(`/${preferredLocale}`, nextUrl));
+  }
+
   const locale = locales.includes(firstSegment) ? firstSegment : defaultLocale;
+
+  // Redirect paths without locale to default locale
+  if (!locales.includes(firstSegment) && !pathname.startsWith('/api/') && !pathname.startsWith('/_next/')) {
+    return NextResponse.redirect(new URL(`/${defaultLocale}${pathname}`, nextUrl));
+  }
 
   const publicPaths = [
     `/${locale}/login`,
