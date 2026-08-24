@@ -102,6 +102,7 @@
 /* Minimal card with subtle depth */
 .card-minimal {
   background: rgb(var(--color-white) / 0.6);
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border: 1px solid rgb(var(--color-cloud));
   box-shadow: 
@@ -116,8 +117,10 @@
 }
 
 /* Typography refinements */
-.text-balance {
-  text-wrap: balance;
+@supports (text-wrap: balance) {
+  .text-balance {
+    text-wrap: balance;
+  }
 }
 
 .text-display {
