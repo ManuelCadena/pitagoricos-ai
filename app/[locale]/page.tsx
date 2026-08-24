@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -7,35 +8,39 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <div className="min-h-screen">
-      {/* Hero: Turrell-inspired light field */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden gradient-sky">
-        {/* Subtle light portal effect */}
-        <div className="absolute inset-0 light-portal" />
-        
-        {/* Minimal geometric element: single circle (Tetractys abstracted) */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-10">
-          <div className="w-[600px] h-[600px] rounded-full border border-[rgb(var(--color-depth))]" />
-          <div className="absolute w-[400px] h-[400px] rounded-full border border-[rgb(var(--color-twilight))]" />
-          <div className="absolute w-[200px] h-[200px] rounded-full border border-[rgb(var(--color-dusk))]" />
+      {/* Hero: Pythagorean Temple con overlay sutil */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        {/* Background image: temple */}
+        <div className="absolute inset-0">
+          <Image
+            src="/images/pythagorean-temple.jpg"
+            alt="Pythagorean Temple"
+            fill
+            priority
+            className="object-cover"
+            quality={90}
+          />
+          {/* Overlay: sutil para legibilidad sin opacar la imagen */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[rgb(var(--color-paper)_/_0.3)] via-transparent to-[rgb(var(--color-paper)_/_0.5)]" />
         </div>
 
-        {/* Content: extreme simplicity */}
+        {/* Content: minimal, legible */}
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-12">
-          {/* Title: ultra-minimal */}
-          <h1 className="text-display font-light text-[rgb(var(--color-charcoal))] text-balance">
+          {/* Title: ultra-minimal con text-shadow sutil */}
+          <h1 className="text-display font-light text-[rgb(var(--color-white))] text-balance drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]">
             {t('hero.title')}
           </h1>
           
           {/* Subtitle: breathing room */}
-          <p className="text-xl md:text-2xl font-light text-[rgb(var(--color-slate))] max-w-2xl mx-auto leading-relaxed text-balance">
+          <p className="text-xl md:text-2xl font-light text-[rgb(var(--color-white))] max-w-2xl mx-auto leading-relaxed text-balance drop-shadow-[0_1px_8px_rgba(0,0,0,0.3)]">
             {t('hero.subtitle')}
           </p>
           
-          {/* CTA: minimal button */}
+          {/* CTA: glassmorphism button */}
           <div className="pt-8">
             <Link
               href={`/${locale}/aula`}
-              className="inline-flex items-center gap-3 px-12 py-4 bg-[rgb(var(--color-white))] text-[rgb(var(--color-charcoal))] rounded-full font-light tracking-wide hover:shadow-lg transition-all duration-500 border border-[rgb(var(--color-cloud))]"
+              className="inline-flex items-center gap-3 px-12 py-4 bg-[rgb(var(--color-white)_/_0.9)] backdrop-blur-md text-[rgb(var(--color-charcoal))] rounded-full font-light tracking-wide hover:bg-[rgb(var(--color-white))] hover:shadow-2xl transition-all duration-500 border border-[rgb(var(--color-white)_/_0.3)]"
             >
               {t('hero.cta')}
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -46,17 +51,17 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
 
         {/* Scroll indicator: minimal */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
-          <span className="text-xs font-light text-[rgb(var(--color-slate))] uppercase tracking-widest">
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-60">
+          <span className="text-xs font-light text-[rgb(var(--color-white))] uppercase tracking-widest drop-shadow-md">
             {locale === 'es' ? 'Explorar' : 'Explore'}
           </span>
-          <svg className="w-5 h-5 text-[rgb(var(--color-slate))] animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <svg className="w-5 h-5 text-[rgb(var(--color-white))] animate-bounce drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
         </div>
       </section>
 
-      {/* Principles: minimal cards with space */}
+      {/* Principles: minimal cards con espacio */}
       <section className="relative py-32 px-6 bg-[rgb(var(--color-paper))]">
         <div className="max-w-6xl mx-auto">
           {/* Section title: minimal */}
