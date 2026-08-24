@@ -25,7 +25,7 @@ export default async function AulaPage({ params }: { params: Promise<{ locale: s
       {/* Hero: minimal, contemplativo */}
       <section className="pt-24 sm:pt-32 pb-10 sm:pb-16 px-5 sm:px-6">
         <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
-          {/* Presencia de Ame: círculos concéntricos */}
+          {/* Presencia de Teano: círculos concéntricos */}
           <div className="flex justify-center mb-4 sm:mb-8">
             <div className="relative w-24 h-24 sm:w-32 sm:h-32">
               <div className="absolute inset-0 light-portal" />

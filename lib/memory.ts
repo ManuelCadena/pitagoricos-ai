@@ -170,7 +170,7 @@ export async function buildContextText(userId: string, resumeConversationId?: st
         const tail = msgs.slice(-6);
         if (tail.length > 0) {
           parts.push('Últimos intercambios de esa sesión:');
-          tail.forEach((m) => parts.push(`${m.role === 'user' ? 'Alumno' : 'Ame'}: ${m.content.slice(0, 200)}`));
+          tail.forEach((m) => parts.push(`${m.role === 'user' ? 'Alumno' : 'Teano'}: ${m.content.slice(0, 200)}`));
         }
       } catch {
         // messages malformado: continuar sin el tail

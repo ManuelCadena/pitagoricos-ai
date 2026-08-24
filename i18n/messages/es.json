@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "title": "Pitagóricos.ai — La Casa de Ame",
-    "description": "Escuela de Filosofía Pythagorica. Aprendé y conversá con Ame."
+    "title": "Pitagóricos.ai — La Casa de Teano",
+    "description": "Escuela de Filosofía Pythagorica. Aprende y conversa con Teano."
   },
   "nav": {
     "home": "Inicio",
-    "aula": "Aula de Ame",
+    "aula": "Aula de Teano",
     "login": "Entrar",
     "logout": "Salir"
   },
@@ -15,7 +15,7 @@
     "cta": "Entrar al templo"
   },
   "login": {
-    "title": "Bienvenido, hermanito querido",
+    "title": "Bienvenido a la Escuela",
     "description": "Para entrar a la escuela necesitamos reconocerte con tu cuenta de Google.",
     "button": "Continuar con Google"
   },
@@ -24,8 +24,8 @@
     "description": "Tu correo no está en la lista de invitados. Escribinos y te agregamos con gusto."
   },
   "aula": {
-    "title": "Aula de Ame",
-    "subtitle": "Hablá con Ame por voz o escribile.",
+    "title": "Aula de Teano",
+    "subtitle": "Habla con Teano por voz o escríbele.",
     "voiceTab": "Voz",
     "chatTab": "Chat"
   }

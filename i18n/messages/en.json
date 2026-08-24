@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "title": "Pitagóricos.ai — The Home of Ame",
-    "description": "School of Pythagorean Philosophy. Learn and converse with Ame."
+    "title": "Pitagóricos.ai — The Home of Teano",
+    "description": "School of Pythagorean Philosophy. Learn and converse with Teano."
   },
   "nav": {
     "home": "Home",
-    "aula": "Ame's Classroom",
+    "aula": "Teano's Classroom",
     "login": "Sign in",
     "logout": "Sign out"
   },
@@ -24,8 +24,8 @@
     "description": "Your email is not on the guest list. Write to us and we will gladly add you."
   },
   "aula": {
-    "title": "Ame's Classroom",
-    "subtitle": "Talk to Ame by voice or write to her.",
+    "title": "Teano's Classroom",
+    "subtitle": "Talk to Teano by voice or write to her.",
     "voiceTab": "Voice",
     "chatTab": "Chat"
   }

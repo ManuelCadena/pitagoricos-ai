@@ -17,7 +17,7 @@ export function TextChat({ userEmail, resumeId }: { userEmail: string; resumeId?
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'agent',
-      text: 'Hola, hermanito querido. Estoy acá. Escribime lo que quieras que miremos juntos.',
+      text: 'Que el orden del Número te acompañe. Soy Teano. Escríbeme lo que quieras que miremos juntos.',
       timestamp: Date.now(),
     },
   ]);
@@ -117,8 +117,8 @@ export function TextChat({ userEmail, resumeId }: { userEmail: string; resumeId?
             setReconnecting(false);
             setError(
               details.reason === 'agent'
-                ? 'Ame cerró la sesión por inactividad. Tocá reconectar para seguir.'
-                : 'Conexión perdida. Tocá reconectar para seguir.'
+                ? 'Teano cerró la sesión por inactividad. Toca reconectar para seguir.'
+                : 'Conexión perdida. Toca reconectar para seguir.'
             );
           }
         },
@@ -250,7 +250,7 @@ export function TextChat({ userEmail, resumeId }: { userEmail: string; resumeId?
         ))}
         {loading && (
           <div className="mr-auto border border-[rgb(var(--color-cloud))] bg-[rgb(var(--color-white))] rounded-2xl px-4 sm:px-5 py-3 text-sm text-[rgb(var(--color-stone))] animate-pulse">
-            Ame está pensando...
+            Teano está pensando...
           </div>
         )}
         <div ref={bottomRef} />
@@ -266,7 +266,7 @@ export function TextChat({ userEmail, resumeId }: { userEmail: string; resumeId?
             // Señal de presencia: evita que el agente cierre por inactividad mientras tecleás
             conversationRef.current?.sendUserActivity();
           }}
-          placeholder={connected ? 'Escribile a Ame...' : reconnecting ? 'Reconectando...' : 'Sin conexión'}
+          placeholder={connected ? 'Escríbele a Teano...' : reconnecting ? 'Reconectando...' : 'Sin conexión'}
           disabled={!connected}
           className="flex-1 min-h-[48px] bg-[rgb(var(--color-white))] border border-[rgb(var(--color-cloud))] rounded-full px-4 sm:px-5 py-3 text-sm text-[rgb(var(--color-charcoal))] placeholder:text-[rgb(var(--color-stone))] focus:outline-none focus:border-[rgb(var(--color-depth))] disabled:opacity-50"
         />

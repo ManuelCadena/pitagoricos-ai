@@ -63,7 +63,7 @@ export function VoiceWidget({ userEmail, resumeId }: { userEmail: string; resume
         conversationToken: data.token,
         connectionType: 'webrtc',
         onConnect: ({ conversationId }) => {
-          console.log('[VoiceWidget] Connected to Ame (WebRTC):', conversationId);
+          console.log('[VoiceWidget] Connected to Teano (WebRTC):', conversationId);
           setIsActive(true);
           setLoading(false);
           elConversationIdRef.current = conversationId;
@@ -87,14 +87,14 @@ export function VoiceWidget({ userEmail, resumeId }: { userEmail: string; resume
             .catch(() => {});
         },
         onDisconnect: () => {
-          console.log('[VoiceWidget] Disconnected from Ame');
+          console.log('[VoiceWidget] Disconnected from Teano');
           setIsActive(false);
           setConversation(null);
           notifySessionEnd();
         },
         onError: (error) => {
           console.error('[VoiceWidget] Error:', error);
-          setError(typeof error === 'string' ? error : 'Error en la conversación con Ame');
+          setError(typeof error === 'string' ? error : 'Error en la conversación con Teano');
           setIsActive(false);
           setLoading(false);
         },
@@ -107,7 +107,7 @@ export function VoiceWidget({ userEmail, resumeId }: { userEmail: string; resume
     } catch (err: any) {
       console.error('[VoiceWidget] Failed to start conversation:', err);
       if (err?.name === 'NotAllowedError') {
-        setError('Permiso de micrófono denegado. Habilitalo en la configuración del navegador.');
+        setError('Permiso de micrófono denegado. Habilítalo en la configuración del navegador.');
       } else {
         setError(err.message || 'No se pudo iniciar la conversación');
       }
@@ -147,16 +147,16 @@ export function VoiceWidget({ userEmail, resumeId }: { userEmail: string; resume
     <div className="flex flex-col items-center gap-6">
       <div className="text-center max-w-lg space-y-4">
         <p className="text-sm sm:text-base text-[rgb(var(--color-slate))] font-light">
-          Presioná el botón del micrófono para hablar con Ame. La conversación es privada y se guarda para tu seguimiento personal.
+          Presiona el botón del micrófono para hablar con Teano. La conversación es privada y se guarda para tu seguimiento personal.
         </p>
         {isActive && (
           <p className="text-[rgb(var(--color-depth))] text-sm animate-pulse">
-            🎙️ Ame está escuchando...
+            🎙️ Teano está escuchando...
           </p>
         )}
         {loading && (
           <p className="text-[rgb(var(--color-depth))] text-sm">
-            Conectando con Ame...
+            Conectando con Teano...
           </p>
         )}
       </div>
@@ -187,8 +187,8 @@ export function VoiceWidget({ userEmail, resumeId }: { userEmail: string; resume
         {loading
           ? 'Conectando...'
           : isActive
-            ? 'Presioná para terminar la conversación'
-            : 'Presioná para hablar con Ame'}
+            ? 'Presiona para terminar la conversación'
+            : 'Presiona para hablar con Teano'}
       </p>
     </div>
   );

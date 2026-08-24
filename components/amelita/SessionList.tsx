@@ -56,8 +56,8 @@ export function SessionList({
     return (
       <div className="text-center text-sm font-light text-[rgb(var(--color-stone))] py-6">
         {es
-          ? 'Todavía no hay sesiones guardadas. Tu primera conversación con Ame quedará registrada acá.'
-          : 'No saved sessions yet. Your first conversation with Ame will be recorded here.'}
+          ? 'Todavía no hay sesiones guardadas. Tu primera conversación con Teano quedará registrada aquí.'
+          : 'No saved sessions yet. Your first conversation with Teano will be recorded here.'}
       </div>
     );
   }
