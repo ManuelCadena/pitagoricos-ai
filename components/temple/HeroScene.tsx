@@ -34,8 +34,8 @@ function Tetractys() {
 
   useFrame((state) => {
     if (group.current) {
-      group.current.rotation.y = state.clock.getElapsedTime() * 0.05;
-      group.current.rotation.z = Math.sin(state.clock.getElapsedTime() * 0.2) * 0.05;
+      group.current.rotation.y = state.clock.getElapsedTime() * 0.08;
+      group.current.rotation.z = Math.sin(state.clock.getElapsedTime() * 0.15) * 0.08;
     }
   });
 
@@ -43,17 +43,19 @@ function Tetractys() {
     <group ref={group}>
       {points.map((pos, i) => (
         <mesh key={i} position={pos}>
-          <sphereGeometry args={[0.08, 16, 16]} />
+          <sphereGeometry args={[0.1, 16, 16]} />
           <meshStandardMaterial
             color="#d4af37"
             emissive="#d4af37"
-            emissiveIntensity={0.6}
+            emissiveIntensity={0.8}
             toneMapped={false}
+            metalness={0.8}
+            roughness={0.2}
           />
         </mesh>
       ))}
       <lineSegments geometry={lineGeometry}>
-        <lineBasicMaterial color="#d4af37" transparent opacity={0.3} />
+        <lineBasicMaterial color="#d4af37" transparent opacity={0.4} linewidth={2} />
       </lineSegments>
     </group>
   );
@@ -64,14 +66,20 @@ function OrbitSphere({ radius, speed, color, count }: { radius: number; speed: n
   const particles = useMemo(() => {
     return Array.from({ length: count }, (_, i) => {
       const angle = (i / count) * Math.PI * 2;
-      return new THREE.Vector3(Math.cos(angle) * radius, Math.sin(angle) * radius, 0);
+      const randomOffset = (Math.random() - 0.5) * 0.2;
+      return new THREE.Vector3(
+        Math.cos(angle) * (radius + randomOffset),
+        Math.sin(angle) * (radius + randomOffset),
+        (Math.random() - 0.5) * 0.5
+      );
     });
   }, [radius, count]);
 
   useFrame((state) => {
     if (ref.current) {
       ref.current.rotation.z = state.clock.getElapsedTime() * speed;
-      ref.current.rotation.x = state.clock.getElapsedTime() * speed * 0.3;
+      ref.current.rotation.x = state.clock.getElapsedTime() * speed * 0.4;
+      ref.current.rotation.y = state.clock.getElapsedTime() * speed * 0.2;
     }
   });
 
@@ -79,8 +87,8 @@ function OrbitSphere({ radius, speed, color, count }: { radius: number; speed: n
     <group ref={ref}>
       {particles.map((pos, i) => (
         <mesh key={i} position={pos}>
-          <sphereGeometry args={[0.03, 8, 8]} />
-          <meshBasicMaterial color={color} transparent opacity={0.7} />
+          <sphereGeometry args={[0.04, 8, 8]} />
+          <meshBasicMaterial color={color} transparent opacity={0.6} />
         </mesh>
       ))}
     </group>
@@ -90,24 +98,30 @@ function OrbitSphere({ radius, speed, color, count }: { radius: number; speed: n
 function Scene() {
   return (
     <>
-      <ambientLight intensity={0.3} />
-      <pointLight position={[10, 10, 10]} intensity={1} color="#d4af37" />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#1a237e" />
+      <ambientLight intensity={0.4} />
+      <pointLight position={[10, 10, 10]} intensity={1.5} color="#d4af37" />
+      <pointLight position={[-10, -10, -10]} intensity={0.8} color="#1a237e" />
+      <pointLight position={[0, 0, 15]} intensity={0.5} color="#d4af37" />
+      
       <Tetractys />
-      <OrbitSphere radius={3.5} speed={0.05} color="#d4af37" count={24} />
-      <OrbitSphere radius={5} speed={0.03} color="#1a237e" count={36} />
-      <OrbitSphere radius={6.5} speed={0.02} color="#4a5d23" count={48} />
+      <OrbitSphere radius={3.5} speed={0.06} color="#d4af37" count={32} />
+      <OrbitSphere radius={5.5} speed={0.04} color="#1a237e" count={48} />
+      <OrbitSphere radius={7.5} speed={0.025} color="#4a5d23" count={64} />
     </>
   );
 }
 
 export function HeroScene() {
   return (
-    <div className="absolute inset-0 z-0">
+    <div className="w-full h-full">
       <Canvas
-        camera={{ position: [0, 0, 8], fov: 60 }}
-        dpr={[1, 1.5]}
-        gl={{ antialias: true, alpha: true }}
+        camera={{ position: [0, 0, 10], fov: 50 }}
+        dpr={[1, 2]}
+        gl={{ 
+          antialias: true, 
+          alpha: true,
+          powerPreference: 'high-performance',
+        }}
         style={{ background: 'transparent' }}
       >
         <Scene />
