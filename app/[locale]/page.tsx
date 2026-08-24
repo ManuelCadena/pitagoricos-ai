@@ -8,20 +8,21 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <div className="min-h-screen">
-      {/* Hero: Pythagorean Temple con overlay sutil */}
+      {/* Hero: Pythagorean Temple — imagen centrada a tamaño completo */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Background image: temple */}
-        <div className="absolute inset-0">
+        {/* Background image: temple centrado, tamaño completo */}
+        <div className="absolute inset-0 flex items-center justify-center bg-[rgb(var(--color-charcoal))]">
           <Image
             src="/images/pythagorean-temple.jpg"
             alt="Pythagorean Temple"
-            fill
+            width={1920}
+            height={1080}
             priority
-            className="object-cover"
-            quality={90}
+            className="max-w-full max-h-full object-contain"
+            quality={95}
           />
-          {/* Overlay: sutil para legibilidad sin opacar la imagen */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[rgb(var(--color-paper)_/_0.3)] via-transparent to-[rgb(var(--color-paper)_/_0.5)]" />
+          {/* Overlay: muy sutil, solo para texto */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[rgba(0,0,0,0.2)] via-transparent to-[rgba(0,0,0,0.3)]" />
         </div>
 
         {/* Content: minimal, legible */}
@@ -145,7 +146,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <footer className="py-12 px-6 bg-[rgb(var(--color-cloud))]">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-sm font-light text-[rgb(var(--color-stone))]">
-            Academia de Filosofía Pythagorica A.C.
+            Fooworks LLC
           </p>
         </div>
       </footer>
