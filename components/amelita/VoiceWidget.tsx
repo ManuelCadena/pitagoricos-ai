@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Mic, MicOff } from 'lucide-react';
 import { Conversation } from '@elevenlabs/client';
 
@@ -9,6 +9,16 @@ export function VoiceWidget({ userEmail }: { userEmail: string }) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(false);
+  const conversationRef = useRef<typeof conversation>(null);
+  conversationRef.current = conversation;
+
+  // F4 (auditoría forense): cerrar la sesión de voz al desmontar el componente
+  // (p.ej. al cambiar al tab Texto) para evitar sesiones cruzadas.
+  useEffect(() => {
+    return () => {
+      conversationRef.current?.endSession().catch(() => {});
+    };
+  }, []);
 
   const startConversation = async () => {
     try {
