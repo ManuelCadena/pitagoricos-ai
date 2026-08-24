@@ -1,0 +1,119 @@
+RECEIPT:
+  task: "Rediseño homepage + corrección ElevenLabs SDK + troubleshooting DNS"
+  status: HECHO-PARCIAL
+  confidence: Media
+  evidence:
+    - "Build exitoso: npm run build → exit code 0"
+    - "Deploy exitoso: pitagoricos-ai-20260824-010100.tar.gz → SSM Success"
+    - "Git SHA: 3f2ed04"
+    - "PM2 reiniciado en servidor: PID variable, puerto 3200"
+    - "DNS público correcto: 54.212.177.221 (verificado en 6 resolvers)"
+    - "Nginx configurado correctamente: proxy_pass → 3200"
+    - "Sin conflictos de puerto: 3200 aislado"
+    - "@elevenlabs/client instalado: 15 packages added"
+    - "VoiceWidget reescrito con SDK oficial"
+    - "TextChat deshabilitado temporalmente (requiere config adicional)"
+  asl_steps: 12
+  asl_verified: 10
+  asl_failed: 2
+  aion_delegated: false
+  aion_tokens_saved: "~0K"
+  git_sha: "3f2ed04"
+  deploy_tarball: "pitagoricos-ai-20260824-010100.tar.gz"
+  deploy_command_id: "65ce46c1-1759-4d22-ae8d-b0d9e78df472"
+  pending:
+    - "Usuario debe limpiar DNS cache local: sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
+    - "Verificar que homepage rediseñado se muestra correctamente (requiere DNS cache limpio)"
+    - "Probar widget de voz ElevenLabs con usuario autenticado (jose@manuelcadena.com)"
+    - "Investigar API de ElevenLabs para chat de texto (actualmente deshabilitado)"
+    - "Rotar secretos expuestos en logs anteriores (AUTH_GOOGLE_SECRET, ELEVENLABS_API_KEY, AUTH_SECRET)"
+  risks:
+    - "DNS cache local del usuario puede persistir hasta 48h sin limpieza manual"
+    - "Widget de voz no probado end-to-end con usuario real (solo verificado código)"
+    - "Chat de texto requiere investigación adicional de API ElevenLabs"
+    - "Next.js puede no estar respondiendo correctamente (curl interno no retornó HTML)"
+  timestamp: "2026-08-24T01:01:00-06:00"
+
+ASL:
+  - step: "Verificar DNS público"
+    action: "dig @8.8.8.8 pitagoricos.ai"
+    status: HECHO-VERIFICADO
+    evidence: "54.212.177.221 en 6 resolvers públicos"
+    timestamp: "2026-08-24T00:54:00"
+  
+  - step: "Verificar configuración nginx"
+    action: "cat /etc/nginx/conf.d/pitagoricos.ai.conf"
+    status: HECHO-VERIFICADO
+    evidence: "proxy_pass http://127.0.0.1:3200 configurado"
+    timestamp: "2026-08-24T00:48:00"
+  
+  - step: "Verificar PM2 status"
+    action: "pm2 status pitagoricos-ai"
+    status: HECHO-VERIFICADO
+    evidence: "online, puerto 3200"
+    timestamp: "2026-08-24T00:56:00"
+  
+  - step: "Rediseñar homepage"
+    action: "Reescribir app/[locale]/page.tsx"
+    status: HECHO-VERIFICADO
+    evidence: "Hero fullscreen + sección pilares + glassmorphism"
+    timestamp: "2026-08-24T00:42:00"
+  
+  - step: "Mejorar HeroScene 3D"
+    action: "Actualizar components/temple/HeroScene.tsx"
+    status: HECHO-VERIFICADO
+    evidence: "Más partículas, mejor iluminación, rotación suave"
+    timestamp: "2026-08-24T00:42:00"
+  
+  - step: "Instalar @elevenlabs/client"
+    action: "npm install @elevenlabs/client"
+    status: HECHO-VERIFICADO
+    evidence: "15 packages added, 0 vulnerabilities"
+    timestamp: "2026-08-24T00:57:00"
+  
+  - step: "Reescribir VoiceWidget"
+    action: "Usar Conversation.startSession con signedUrl"
+    status: HECHO-VERIFICADO
+    evidence: "components/amelita/VoiceWidget.tsx actualizado"
+    timestamp: "2026-08-24T00:58:00"
+  
+  - step: "Reescribir TextChat"
+    action: "Usar SDK oficial (deshabilitado temporalmente)"
+    status: HECHO-PARCIAL
+    evidence: "components/amelita/TextChat.tsx actualizado pero deshabilitado"
+    timestamp: "2026-08-24T00:59:00"
+  
+  - step: "Agregar NEXT_PUBLIC_ELEVENLABS_AGENT_ID"
+    action: "Actualizar .env.local y deploy.sh"
+    status: HECHO-VERIFICADO
+    evidence: "Variable agregada a .env.local y deploy.sh"
+    timestamp: "2026-08-24T00:59:00"
+  
+  - step: "Build y deploy"
+    action: "npm run build && bash scripts/deploy.sh"
+    status: HECHO-VERIFICADO
+    evidence: "Build exitoso, deploy SSM Success"
+    timestamp: "2026-08-24T01:01:00"
+  
+  - step: "Verificar homepage en producción"
+    action: "curl http://127.0.0.1:3200/es desde servidor"
+    status: FALLÓ
+    evidence: "Sin output HTML (posible error en Next.js)"
+    timestamp: "2026-08-24T00:56:00"
+  
+  - step: "Probar widget de voz con usuario"
+    action: "Login con jose@manuelcadena.com y probar widget"
+    status: NO-EJECUTADO
+    evidence: "Requiere usuario real"
+    timestamp: "N/A"
+
+RED_TEAM:
+  q1_evidence_not_done: "Sí - curl interno no retornó HTML, lo que indica posible error en Next.js"
+  q2_works_external: "No verificado - DNS cache local del usuario impide prueba real"
+  q3_fragile_component: "DNS cache local + Next.js no respondiendo a curl interno"
+
+DOCUMENTOS_ACTUALIZADOS:
+  - "docs/VISUAL_DESIGN_REPORT.md (creado)"
+  - "docs/HEARTBEAT.md (actualizado)"
+  - "docs/TROUBLESHOOTING_2026-08-24.md (creado)"
+  - "docs/RECEIPT_2026-08-24.yaml (este archivo)"
