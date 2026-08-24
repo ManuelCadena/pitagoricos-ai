@@ -1,31 +1,44 @@
 import { getTranslations } from 'next-intl/server';
-import { auth } from '@/auth';
-import { redirect } from 'next/navigation';
 import { Aula } from '@/components/amelita/Aula';
 
 export default async function AulaPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const session = await auth();
-
-  if (!session?.user?.email) {
-    redirect(`/${locale}/login`);
-  }
-
-  if (!(session.user as any).isAllowed) {
-    redirect(`/${locale}/no-autorizado`);
-  }
-
-  const t = await getTranslations({ locale, namespace: 'aula' });
+  const t = await getTranslations({ locale });
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-6">
-      <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl md:text-5xl font-serif text-gold mb-3">{t('title')}</h1>
-          <p className="text-muted text-lg">{t('subtitle')}</p>
+    <div className="min-h-screen bg-gradient-sky">
+      {/* Hero: minimal, contemplative */}
+      <section className="pt-32 pb-16 px-6">
+        <div className="max-w-4xl mx-auto text-center space-y-8">
+          {/* Amelita presence */}
+          <div className="flex justify-center mb-8">
+            <div className="relative w-32 h-32">
+              <div className="absolute inset-0 light-portal" />
+              <div className="relative w-full h-full flex items-center justify-center">
+                <div className="w-24 h-24 rounded-full border border-[rgb(var(--color-depth))] opacity-30" />
+                <div className="absolute w-16 h-16 rounded-full border border-[rgb(var(--color-twilight))] opacity-40" />
+                <div className="absolute w-8 h-8 rounded-full border border-[rgb(var(--color-dusk))] opacity-50" />
+                <div className="absolute w-2 h-2 rounded-full bg-[rgb(var(--color-depth))]" />
+              </div>
+            </div>
+          </div>
+
+          <h1 className="text-title font-light text-[rgb(var(--color-charcoal))] text-balance">
+            {t('aula.title')}
+          </h1>
+          
+          <p className="text-lg font-light text-[rgb(var(--color-slate))] max-w-2xl mx-auto leading-relaxed">
+            {t('aula.subtitle')}
+          </p>
         </div>
-        <Aula locale={locale} userEmail={session.user.email} />
-      </div>
+      </section>
+
+      {/* Aula component */}
+      <section className="pb-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <Aula locale={locale} />
+        </div>
+      </section>
     </div>
   );
 }

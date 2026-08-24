@@ -1,0 +1,35 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:rgb(147, 197, 253);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:rgb(165, 180, 252);stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Tetractys abstracted: 4 points forming sacred geometry -->
+  <!-- Top point (1) -->
+  <circle cx="60" cy="30" r="4" fill="url(#logoGradient)" />
+  
+  <!-- Second row (2) -->
+  <circle cx="50" cy="50" r="4" fill="url(#logoGradient)" />
+  <circle cx="70" cy="50" r="4" fill="url(#logoGradient)" />
+  
+  <!-- Third row (3) -->
+  <circle cx="40" cy="70" r="4" fill="url(#logoGradient)" />
+  <circle cx="60" cy="70" r="4" fill="url(#logoGradient)" />
+  <circle cx="80" cy="70" r="4" fill="url(#logoGradient)" />
+  
+  <!-- Fourth row (4) -->
+  <circle cx="30" cy="90" r="4" fill="url(#logoGradient)" />
+  <circle cx="50" cy="90" r="4" fill="url(#logoGradient)" />
+  <circle cx="70" cy="90" r="4" fill="url(#logoGradient)" />
+  <circle cx="90" cy="90" r="4" fill="url(#logoGradient)" />
+  
+  <!-- Connecting lines (subtle) -->
+  <line x1="60" y1="30" x2="50" y2="50" stroke="rgb(147, 197, 253)" stroke-width="0.5" opacity="0.3" />
+  <line x1="60" y1="30" x2="70" y2="50" stroke="rgb(147, 197, 253)" stroke-width="0.5" opacity="0.3" />
+  <line x1="50" y1="50" x2="40" y2="70" stroke="rgb(147, 197, 253)" stroke-width="0.5" opacity="0.3" />
+  <line x1="50" y1="50" x2="60" y2="70" stroke="rgb(147, 197, 253)" stroke-width="0.5" opacity="0.3" />
+  <line x1="70" y1="50" x2="60" y2="70" stroke="rgb(147, 197, 253)" stroke-width="0.5" opacity="0.3" />
+  <line x1="70" y1="50" x2="80" y2="70" stroke="rgb(147, 197, 253)" stroke-width="0.5" opacity="0.3" />
+</svg>

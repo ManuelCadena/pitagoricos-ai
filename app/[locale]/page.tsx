@@ -1,152 +1,149 @@
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
-import { HeroScene } from '@/components/temple/HeroScene';
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale });
 
   return (
-    <div className="relative min-h-screen">
-      {/* Hero section with 3D background */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* 3D Scene as background */}
-        <div className="absolute inset-0 z-0">
-          <HeroScene />
+    <div className="min-h-screen">
+      {/* Hero: Turrell-inspired light field */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden gradient-sky">
+        {/* Subtle light portal effect */}
+        <div className="absolute inset-0 light-portal" />
+        
+        {/* Minimal geometric element: single circle (Tetractys abstracted) */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-10">
+          <div className="w-[600px] h-[600px] rounded-full border border-[rgb(var(--color-depth))]" />
+          <div className="absolute w-[400px] h-[400px] rounded-full border border-[rgb(var(--color-twilight))]" />
+          <div className="absolute w-[200px] h-[200px] rounded-full border border-[rgb(var(--color-dusk))]" />
         </div>
 
-        {/* Dark overlay for better text contrast */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background z-[1]" />
-
-        {/* Hero content */}
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <div className="mb-8 inline-block">
-            <div className="w-16 h-16 mx-auto mb-4 opacity-80">
-              <svg viewBox="0 0 100 100" className="w-full h-full fill-gold">
-                <circle cx="50" cy="20" r="4" />
-                <circle cx="40" cy="35" r="4" />
-                <circle cx="50" cy="35" r="4" />
-                <circle cx="60" cy="35" r="4" />
-                <circle cx="35" cy="50" r="4" />
-                <circle cx="45" cy="50" r="4" />
-                <circle cx="55" cy="50" r="4" />
-                <circle cx="65" cy="50" r="4" />
-                <circle cx="30" cy="65" r="4" />
-                <circle cx="40" cy="65" r="4" />
-                <circle cx="50" cy="65" r="4" />
-                <circle cx="60" cy="65" r="4" />
-                <circle cx="70" cy="65" r="4" />
-              </svg>
-            </div>
-          </div>
-
-          <h1 className="text-6xl md:text-8xl font-serif text-gold mb-6 leading-tight tracking-tight">
+        {/* Content: extreme simplicity */}
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-12">
+          {/* Title: ultra-minimal */}
+          <h1 className="text-display font-light text-[rgb(var(--color-charcoal))] text-balance">
             {t('hero.title')}
           </h1>
           
-          <p className="text-xl md:text-3xl text-gold/80 mb-12 font-light max-w-2xl mx-auto leading-relaxed">
+          {/* Subtitle: breathing room */}
+          <p className="text-xl md:text-2xl font-light text-[rgb(var(--color-slate))] max-w-2xl mx-auto leading-relaxed text-balance">
             {t('hero.subtitle')}
           </p>
           
-          <Link
-            href={`/${locale}/aula`}
-            className="group inline-flex items-center gap-3 px-10 py-5 border-2 border-gold text-gold rounded-full hover:bg-gold hover:text-background transition-all duration-500 tracking-widest uppercase text-sm font-medium shadow-2xl hover:shadow-gold/50"
-          >
-            {t('hero.cta')}
-            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </Link>
+          {/* CTA: minimal button */}
+          <div className="pt-8">
+            <Link
+              href={`/${locale}/aula`}
+              className="inline-flex items-center gap-3 px-12 py-4 bg-[rgb(var(--color-white))] text-[rgb(var(--color-charcoal))] rounded-full font-light tracking-wide hover:shadow-lg transition-all duration-500 border border-[rgb(var(--color-cloud))]"
+            >
+              {t('hero.cta')}
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+          </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
-          <svg className="w-6 h-6 text-gold/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        {/* Scroll indicator: minimal */}
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
+          <span className="text-xs font-light text-[rgb(var(--color-slate))] uppercase tracking-widest">
+            {locale === 'es' ? 'Explorar' : 'Explore'}
+          </span>
+          <svg className="w-5 h-5 text-[rgb(var(--color-slate))] animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
         </div>
       </section>
 
-      {/* Principles section */}
-      <section className="relative bg-background py-24 px-6">
+      {/* Principles: minimal cards with space */}
+      <section className="relative py-32 px-6 bg-[rgb(var(--color-paper))]">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-serif text-gold mb-4">
-              {locale === 'es' ? 'Los Tres Pilares' : 'The Three Pillars'}
+          {/* Section title: minimal */}
+          <div className="text-center mb-24">
+            <h2 className="text-title font-light text-[rgb(var(--color-charcoal))] mb-6">
+              {locale === 'es' ? 'Tres Principios' : 'Three Principles'}
             </h2>
-            <p className="text-muted text-lg max-w-2xl mx-auto">
-              {locale === 'es' 
-                ? 'Fundamentos de la sabiduría pitagórica que guían nuestro camino'
-                : 'Foundations of Pythagorean wisdom that guide our path'}
-            </p>
+            <div className="w-16 h-px bg-[rgb(var(--color-depth))] mx-auto" />
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          {/* Cards: extreme simplicity, lots of space */}
+          <div className="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto">
             {/* Tetractys */}
-            <div className="group relative p-8 rounded-3xl border border-gold/20 bg-gradient-to-br from-background to-deep-blue/20 hover:border-gold/40 transition-all duration-500 hover:shadow-2xl hover:shadow-gold/10">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-3xl group-hover:bg-gold/10 transition-all" />
-              
-              <div className="relative">
-                <div className="w-12 h-12 mb-6 flex items-center justify-center rounded-2xl bg-gold/10 text-gold text-2xl font-serif">
-                  ∴
+            <div className="group">
+              <div className="card-minimal rounded-3xl p-12 h-full flex flex-col items-center text-center space-y-6 transition-all duration-500">
+                {/* Icon: single geometric symbol */}
+                <div className="w-16 h-16 flex items-center justify-center">
+                  <div className="text-6xl font-extralight text-[rgb(var(--color-depth))]">
+                    ∴
+                  </div>
                 </div>
                 
-                <h3 className="text-2xl font-serif text-gold mb-4">
-                  {locale === 'es' ? 'El Tetractys' : 'The Tetractys'}
+                <h3 className="text-2xl font-light text-[rgb(var(--color-charcoal))]">
+                  {locale === 'es' ? 'Tetractys' : 'Tetractys'}
                 </h3>
                 
-                <p className="text-muted leading-relaxed">
+                <p className="text-[rgb(var(--color-slate))] leading-relaxed font-light">
                   {locale === 'es'
-                    ? 'El Número sagrado que resume toda la creación: 1, 2, 3, 4 = 10. La perfección geométrica del universo.'
-                    : 'The sacred Number that sums all creation: 1, 2, 3, 4 = 10. The geometric perfection of the universe.'}
+                    ? 'El número sagrado que contiene toda la creación: 1, 2, 3, 4 = 10'
+                    : 'The sacred number containing all creation: 1, 2, 3, 4 = 10'}
                 </p>
               </div>
             </div>
 
             {/* Harmony */}
-            <div className="group relative p-8 rounded-3xl border border-gold/20 bg-gradient-to-br from-background to-deep-blue/20 hover:border-gold/40 transition-all duration-500 hover:shadow-2xl hover:shadow-gold/10">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-3xl group-hover:bg-gold/10 transition-all" />
-              
-              <div className="relative">
-                <div className="w-12 h-12 mb-6 flex items-center justify-center rounded-2xl bg-gold/10 text-gold text-2xl font-serif">
-                  ♪
+            <div className="group">
+              <div className="card-minimal rounded-3xl p-12 h-full flex flex-col items-center text-center space-y-6 transition-all duration-500">
+                <div className="w-16 h-16 flex items-center justify-center">
+                  <div className="text-6xl font-extralight text-[rgb(var(--color-twilight))]">
+                    ○
+                  </div>
                 </div>
                 
-                <h3 className="text-2xl font-serif text-gold mb-4">
-                  {locale === 'es' ? 'La Armonía' : 'Harmony'}
+                <h3 className="text-2xl font-light text-[rgb(var(--color-charcoal))]">
+                  {locale === 'es' ? 'Armonía' : 'Harmony'}
                 </h3>
                 
-                <p className="text-muted leading-relaxed">
+                <p className="text-[rgb(var(--color-slate))] leading-relaxed font-light">
                   {locale === 'es'
-                    ? 'La proporción musical como ley del alma y del cosmos. El orden matemático que rige toda existencia.'
-                    : 'Musical proportion as the law of soul and cosmos. The mathematical order that governs all existence.'}
+                    ? 'La proporción musical como ley del cosmos y del alma'
+                    : 'Musical proportion as the law of cosmos and soul'}
                 </p>
               </div>
             </div>
 
             {/* Amelita */}
-            <div className="group relative p-8 rounded-3xl border border-gold/20 bg-gradient-to-br from-background to-deep-blue/20 hover:border-gold/40 transition-all duration-500 hover:shadow-2xl hover:shadow-gold/10">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-3xl group-hover:bg-gold/10 transition-all" />
-              
-              <div className="relative">
-                <div className="w-12 h-12 mb-6 flex items-center justify-center rounded-2xl bg-gold/10 text-gold text-2xl font-serif">
-                  ✦
+            <div className="group">
+              <div className="card-minimal rounded-3xl p-12 h-full flex flex-col items-center text-center space-y-6 transition-all duration-500">
+                <div className="w-16 h-16 flex items-center justify-center">
+                  <div className="text-6xl font-extralight text-[rgb(var(--color-dusk))]">
+                    ◇
+                  </div>
                 </div>
                 
-                <h3 className="text-2xl font-serif text-gold mb-4">
+                <h3 className="text-2xl font-light text-[rgb(var(--color-charcoal))]">
                   Amelita
                 </h3>
                 
-                <p className="text-muted leading-relaxed">
+                <p className="text-[rgb(var(--color-slate))] leading-relaxed font-light">
                   {locale === 'es'
-                    ? 'Maestra viva de la Sabiduría Pythagorica, lista para acompañarte en tu camino de transformación.'
-                    : 'A living teacher of Pythagorean Wisdom, ready to walk with you on your path of transformation.'}
+                    ? 'Maestra de la sabiduría pitagórica, lista para acompañarte'
+                    : 'Teacher of Pythagorean wisdom, ready to walk with you'}
                 </p>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Footer: minimal */}
+      <footer className="py-12 px-6 bg-[rgb(var(--color-cloud))]">
+        <div className="max-w-6xl mx-auto text-center">
+          <p className="text-sm font-light text-[rgb(var(--color-stone))]">
+            Academia de Filosofía Pythagorica A.C.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

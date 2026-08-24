@@ -1,52 +1,163 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
-  --background: #0a0a12;
-  --foreground: #f5f0e6;
-  --gold: #d4af37;
-  --gold-light: #f0d878;
-  --marble: #f5f0e6;
-  --deep-blue: #1a237e;
-  --olive: #4a5d23;
-  --muted: rgba(245, 240, 230, 0.6);
+@layer theme {
+  :root {
+    /* Turrell-inspired palette: atmospheric, contemplative */
+    --color-sky-light: 237 242 251;      /* Soft sky blue */
+    --color-sky: 219 234 254;            /* Light blue */
+    --color-horizon: 191 219 254;        /* Horizon blue */
+    --color-depth: 147 197 253;          /* Deep blue */
+    --color-twilight: 165 180 252;       /* Twilight purple */
+    --color-dusk: 192 132 252;           /* Soft purple */
+    
+    /* Neutrals: warm whites and cool grays */
+    --color-white: 255 255 255;
+    --color-paper: 250 250 250;
+    --color-cloud: 245 245 247;
+    --color-stone: 156 163 175;
+    --color-slate: 71 85 105;
+    --color-charcoal: 30 41 59;
+    
+    /* Accent: subtle warmth */
+    --color-rose: 251 207 232;
+    --color-amber: 254 243 199;
+    
+    /* Semantic colors */
+    --background: var(--color-paper);
+    --foreground: var(--color-charcoal);
+    --muted: var(--color-stone);
+    --accent: var(--color-depth);
+    --border: var(--color-cloud);
+  }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-gold: var(--gold);
-  --color-gold-light: var(--gold-light);
-  --color-marble: var(--marble);
-  --color-deep-blue: var(--deep-blue);
-  --color-olive: var(--olive);
-  --color-muted: var(--muted);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@layer base {
+  body {
+    @apply bg-[rgb(var(--background))] text-[rgb(var(--foreground))];
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+  }
 }
 
-html {
-  scroll-behavior: smooth;
+/* Turrell-inspired gradient backgrounds */
+.gradient-sky {
+  background: linear-gradient(
+    180deg,
+    rgb(var(--color-sky-light)) 0%,
+    rgb(var(--color-sky)) 50%,
+    rgb(var(--color-horizon)) 100%
+  );
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: 'Inter', Arial, Helvetica, sans-serif;
+.gradient-twilight {
+  background: linear-gradient(
+    180deg,
+    rgb(var(--color-horizon)) 0%,
+    rgb(var(--color-twilight)) 50%,
+    rgb(var(--color-dusk)) 100%
+  );
 }
 
-/* Pythagorean accent utilities */
-.text-gold {
-  color: var(--gold);
+.gradient-depth {
+  background: linear-gradient(
+    180deg,
+    rgb(var(--color-paper)) 0%,
+    rgb(var(--color-sky)) 100%
+  );
 }
 
-.text-muted {
-  color: var(--muted);
+/* Light portal effect (Turrell's Ganzfeld) */
+.light-portal {
+  position: relative;
+  overflow: hidden;
 }
 
-.bg-gold {
-  background-color: var(--gold);
+.light-portal::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: radial-gradient(
+    circle at center,
+    rgb(var(--color-horizon) / 0.3) 0%,
+    rgb(var(--color-sky) / 0.1) 40%,
+    transparent 70%
+  );
+  animation: pulse-light 8s ease-in-out infinite;
 }
 
-.border-gold {
-  border-color: var(--gold);
+@keyframes pulse-light {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); }
+}
+
+/* Minimal card with subtle depth */
+.card-minimal {
+  background: rgb(var(--color-white) / 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgb(var(--color-cloud));
+  box-shadow: 
+    0 1px 2px rgb(var(--color-charcoal) / 0.02),
+    0 4px 16px rgb(var(--color-charcoal) / 0.04);
+}
+
+.card-minimal:hover {
+  box-shadow: 
+    0 2px 4px rgb(var(--color-charcoal) / 0.03),
+    0 8px 24px rgb(var(--color-charcoal) / 0.06);
+}
+
+/* Typography refinements */
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-display {
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.text-title {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* Smooth transitions */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Remove default focus rings, add custom */
+*:focus-visible {
+  outline: 2px solid rgb(var(--color-depth));
+  outline-offset: 2px;
+}
+
+/* Scrollbar styling (minimal) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(var(--color-cloud));
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-stone));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--color-slate));
 }
