@@ -19,13 +19,15 @@
 ## Últimos cambios
 
 ### 2026-08-25
-- ✅ **Knowledge Base ampliado**:
+- ✅ **Knowledge Base ampliado — COMPLETADO**:
   - Integrado libro "Pitágoras: Auto-Aprendizaje de Vida" de María Amelia Ruiz de Motto
   - 193KB, 12 capítulos de enseñanzas pitagóricas canónicas
   - Archivo preparado en `knowledge-base/pitagoras-auto-aprendizaje-de-vida-raw.txt`
   - Sincronizado con repo About-God (`07-AMELIA-RUIZ-CONFERENCES/libros/`)
+  - ✅ Subido a ElevenLabs (ID: `nr6KnGahZfqkDL1PoHPF`)
+  - ✅ Asociado al agente Amelita (14 documentos totales en KB)
+  - ✅ RAG habilitado (usage_mode: auto)
   - Documentación actualizada en `ELEVENLABS_AGENT_CONFIG.md`
-  - Pendiente: subir a ElevenLabs UI y asociar al agente Amelita
 
 ### 2026-08-24
 

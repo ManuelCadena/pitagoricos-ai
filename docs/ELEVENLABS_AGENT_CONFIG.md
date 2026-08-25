@@ -295,9 +295,9 @@ curl -H "Cookie: [session-cookie]" https://pitagoricos.ai/api/signed-url
 **Estado**:
 - [x] Archivo preparado en `knowledge-base/`
 - [x] Copiado a repo About-God (`07-AMELIA-RUIZ-CONFERENCES/libros/`)
-- [ ] Subido a ElevenLabs UI
-- [ ] Asociado al agente Amelita
-- [ ] RAG habilitado
+- [x] Subido a ElevenLabs (ID: `nr6KnGahZfqkDL1PoHPF`)
+- [x] Asociado al agente Amelita (14 documentos totales en KB)
+- [x] RAG habilitado (usage_mode: auto)
 
 **Cómo subir**:
 ```bash
