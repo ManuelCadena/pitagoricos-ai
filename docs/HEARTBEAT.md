@@ -16,7 +16,18 @@
 - **Diseño**: ✅ Rediseñado completamente (ver `docs/VISUAL_DESIGN_REPORT.md`)
 - **ElevenLabs**: ✅ SDK oficial `@elevenlabs/client` instalado
 
-## Últimos cambios (2026-08-24)
+## Últimos cambios
+
+### 2026-08-25
+- ✅ **Knowledge Base ampliado**:
+  - Integrado libro "Pitágoras: Auto-Aprendizaje de Vida" de María Amelia Ruiz de Motto
+  - 193KB, 12 capítulos de enseñanzas pitagóricas canónicas
+  - Archivo preparado en `knowledge-base/pitagoras-auto-aprendizaje-de-vida-raw.txt`
+  - Sincronizado con repo About-God (`07-AMELIA-RUIZ-CONFERENCES/libros/`)
+  - Documentación actualizada en `ELEVENLABS_AGENT_CONFIG.md`
+  - Pendiente: subir a ElevenLabs UI y asociar al agente Amelita
+
+### 2026-08-24
 
 ### Diseño y UX
 - ✅ **REDISEÑO COMPLETO DEL HOMEPAGE**:

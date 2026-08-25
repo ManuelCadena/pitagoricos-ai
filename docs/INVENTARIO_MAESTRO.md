@@ -5,6 +5,8 @@
 |---|---|---|
 | Logo Tetractys | `public/images/logo.svg` | Logo SVG con Tetractys dorado. |
 | Scene 3D | `components/temple/HeroScene.tsx` | Tetractys + esferas armónicas con React Three Fiber. |
+| Knowledge Base | `knowledge-base/` | Corpus de conocimiento para agente ElevenLabs Amelita. |
+| Libro Pitágoras | `knowledge-base/pitagoras-auto-aprendizaje-de-vida-raw.txt` | Libro completo de Amelia Ruiz (193KB, 12 capítulos). |
 
 ## Endpoints
 | Endpoint | Uso |

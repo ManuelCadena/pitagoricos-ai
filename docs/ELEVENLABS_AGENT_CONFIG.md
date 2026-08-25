@@ -265,6 +265,59 @@ curl -H "Cookie: [session-cookie]" https://pitagoricos.ai/api/signed-url
 
 ---
 
+## Knowledge Base — Corpus Amelita (2026-08-25)
+
+### Libros integrados
+
+#### 1. Pitágoras: Auto-Aprendizaje de Vida (2026-08-25)
+
+**Autora**: María Amelia Ruiz de Motto  
+**Archivo local**: `knowledge-base/pitagoras-auto-aprendizaje-de-vida-raw.txt`  
+**Tamaño**: 193KB (2,853 líneas, ~198,000 caracteres)  
+**Formato**: Texto plano (digitalizado)
+
+**Contenido**: Doce lecciones de auto-aprendizaje de vida basadas en las enseñanzas de Pitágoras:
+1. La Autoobservación, el Poder de la Ley del Silencio
+2. La Autoobservación (Yin). El Poder de Selección y Discernimiento
+3. El Perdón y el Olvido, la Rueda de las Encarnaciones
+4. Dios es la Vida, la Verdad y el Bien
+5. La Cadena de Mentalismo Positivo en el Planeta
+6. Cambia tu Conciencia y Cambiarás la Conciencia Planetaria
+7. Diez Ideas "Madres"
+8. El Sendero (Tao): "Tu" Sentido
+9. Tu Existencia es Unidad Perfecta. La Ilusión de la Separación
+10. La Expansión de la Conciencia Divina
+11. "El Triángulo Perfecto de tu Equilibrio"
+12. La Libertad
+
+**Temas clave**: Autoobservación, energías Yin/Yan, perdón, mentalismo positivo, unidad perfecta, conciencia divina, libertad espiritual
+
+**Estado**:
+- [x] Archivo preparado en `knowledge-base/`
+- [x] Copiado a repo About-God (`07-AMELIA-RUIZ-CONFERENCES/libros/`)
+- [ ] Subido a ElevenLabs UI
+- [ ] Asociado al agente Amelita
+- [ ] RAG habilitado
+
+**Cómo subir**:
+```bash
+# Opción 1: UI (recomendado)
+# 1. Ir a https://elevenlabs.io/app/conversational-ai
+# 2. Seleccionar agente "Amelita" (agent_9801m0s0px8afx8t8nq9semfwke2)
+# 3. Ir a "Knowledge Base"
+# 4. Click "Add Document"
+# 5. Subir knowledge-base/pitagoras-auto-aprendizaje-de-vida-raw.txt
+# 6. Configurar usage_mode: auto
+
+# Opción 2: API
+curl -X POST "https://api.elevenlabs.io/v1/convai/knowledge-base/file" \
+  -H "xi-api-key: $ELEVENLABS_API_KEY" \
+  -F "file=@knowledge-base/pitagoras-auto-aprendizaje-de-vida-raw.txt" \
+  -F "name=Pitágoras: Auto-Aprendizaje de Vida"
+```
+
+---
+
 ## Knowledge Base — Platonic Space Symposium (2026-08-24)
 
 **Análisis PhD**: el prompt de Teano la define como "testigo-oyente del Symposium" con
